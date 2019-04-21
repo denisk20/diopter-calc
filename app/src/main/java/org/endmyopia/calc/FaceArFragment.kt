@@ -38,4 +38,8 @@ class FaceArFragment : ArFragment() {
 
         return frameLayout
     }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        //this prevents fullscreen, see https://github.com/google-ar/sceneform-android-sdk/issues/88
+    }
 }
