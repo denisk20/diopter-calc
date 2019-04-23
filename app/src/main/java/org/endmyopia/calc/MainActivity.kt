@@ -1,6 +1,10 @@
 package org.endmyopia.calc
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
@@ -8,14 +12,26 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.view.get
+import com.google.ar.core.ArCoreApk
+import com.google.ar.core.AugmentedFace
+import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.ux.AugmentedFaceNode
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.fragment_measure.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!checkIsSupportedDeviceOrFinish(this)) {
+            return
+        }
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -61,7 +77,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (item.itemId) {
             R.id.measure -> {
-                fragmentTransaction.replace(R.id.content, MeasureFragment())
+                val measureFragment = MeasureFragment()
+                val arFragment: FaceArFragment = measureFragment.measure_arView as FaceArFragment;
+                val sceneView = arFragment.arSceneView
+
+                // This is important to make sure that the camera stream renders first so that
+                // the face mesh occlusion works correctly.
+                sceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
+
+                val scene = sceneView.scene
+
+                scene.addOnUpdateListener(
+                    FrameTime frameTime -> {
+                    val faceList = sceneView.session!!.getAllTrackables(AugmentedFace::class.java)
+
+                    // Make new AugmentedFaceNodes for any new faces.
+                    for (face in faceList) {
+                        val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
+                        (format.format(Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())))
+                    }
+                })
+                fragmentTransaction.replace(R.id.content, measureFragment)
+
             }
             R.id.progress -> {
                 fragmentTransaction.replace(R.id.content, ProgressFragment())
@@ -76,4 +113,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    /**
+     * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
+     * on this device.
+     *
+     *
+     * Sceneform requires Android N on the device as well as OpenGL 3.0 capabilities.
+     *
+     *
+     * Finishes the activity if Sceneform can not run
+     */
+    fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean {
+        if (ArCoreApk.getInstance().checkAvailability(activity) === ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE) {
+            Toast.makeText(activity, "Augmented Faces requires ArCore", Toast.LENGTH_LONG).show()
+            activity.finish()
+            return false
+        }
+        val openGlVersionString = (activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            .deviceConfigurationInfo
+            .glEsVersion
+        if (java.lang.Double.parseDouble(openGlVersionString) < 3.0) {
+            Toast.makeText(activity, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
+                .show()
+            activity.finish()
+            return false
+        }
+        return true
+    }
+
 }
