@@ -22,10 +22,4 @@ class MeasureFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_measure, container, false)
     }
-
-
-    override fun onStart() {
-        super.onStart()
-        measure_text.text = "hello"
-    }
 }
