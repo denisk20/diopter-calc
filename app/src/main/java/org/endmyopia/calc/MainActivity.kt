@@ -22,6 +22,7 @@ import com.google.ar.sceneform.ux.AugmentedFaceNode
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_measure.*
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -77,28 +78,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (item.itemId) {
             R.id.measure -> {
-                val measureFragment = MeasureFragment()
-                val arFragment: FaceArFragment = measureFragment.measure_arView as FaceArFragment;
-                val sceneView = arFragment.arSceneView
-
-                // This is important to make sure that the camera stream renders first so that
-                // the face mesh occlusion works correctly.
-                sceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
-
-                val scene = sceneView.scene
-
-                scene.addOnUpdateListener(
-                    FrameTime frameTime -> {
-                    val faceList = sceneView.session!!.getAllTrackables(AugmentedFace::class.java)
-
-                    // Make new AugmentedFaceNodes for any new faces.
-                    for (face in faceList) {
-                        val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
-                        (format.format(Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())))
-                    }
-                })
-                fragmentTransaction.replace(R.id.content, measureFragment)
-
+                fragmentTransaction.replace(R.id.content, MeasureFragment())
             }
             R.id.progress -> {
                 fragmentTransaction.replace(R.id.content, ProgressFragment())
@@ -109,8 +89,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         fragmentTransaction.commit()
-
         drawer_layout.closeDrawer(GravityCompat.START)
+
         return true
     }
 
