@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="match_parent"
-                                                   tools:context=".MeasureFragment">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MeasureFragment"
+>
+<androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
     <TextView
             android:id="@+id/measure_text"
@@ -26,4 +32,28 @@
             app:layout_constraintTop_toBottomOf="@+id/measure_text"
             app:layout_constraintBottom_toBottomOf="parent"
     />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--Do not remove this fab, without it the video overlaps the navigation drawer-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@android:drawable/ic_menu_camera"
+    />
+
+    <TextView
+            android:id="@+id/distance"
+            style="@style/FloatingLabel"
+            android:layout_gravity="bottom|start"
+    />
+
+    <TextView
+            android:id="@+id/diopters"
+            style="@style/FloatingLabel"
+            android:layout_gravity="bottom|end"
+            android:text="2.5dp"
+    />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

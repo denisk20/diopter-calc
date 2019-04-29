@@ -1,11 +1,11 @@
 package org.endmyopia.calc
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
@@ -18,7 +18,11 @@ import java.util.EnumSet
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
 class FaceArFragment : ArFragment() {
 
-    private val format = DecimalFormat(".00")
+    private val formatDist = DecimalFormat("#.0 cm")
+    private val formatDiopt = DecimalFormat("-#.0 diopt")
+
+    private var lastUpdate = -1L
+    private val UPDATE_INTERVAL = 500L
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
@@ -59,15 +63,28 @@ class FaceArFragment : ArFragment() {
 
         val scene = arSceneView.scene
 
+        val distance = activity?.findViewById<TextView>(R.id.distance)
+        val diopters = activity?.findViewById<TextView>(R.id.diopters)
+
         scene.addOnUpdateListener { frameTime ->
             run {
+                val now = System.currentTimeMillis()
+
+                if(now - UPDATE_INTERVAL < lastUpdate) {
+                    return@run
+                }
                 val faceList = arSceneView.session!!.getAllTrackables(AugmentedFace::class.java)
 
                 // Make new AugmentedFaceNodes for any new faces.
                 for (face in faceList) {
                     val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
-                    Log.e("=======", format.format(Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())))
+                    val distMeter =
+                        Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())
+                    distance?.setText(formatDist.format(distMeter * 100))
+                    diopters?.setText(formatDiopt.format(1/distMeter))
                 }
+
+                lastUpdate = now
             }
         }
     }
