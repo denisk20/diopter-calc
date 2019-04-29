@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
@@ -22,7 +24,7 @@ class FaceArFragment : ArFragment() {
     private val formatDiopt = DecimalFormat("-#.0 diopt")
 
     private var lastUpdate = -1L
-    private val UPDATE_INTERVAL = 500L
+    private val UPDATE_INTERVAL = 500L //ms
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
@@ -61,12 +63,17 @@ class FaceArFragment : ArFragment() {
         // the face mesh occlusion works correctly.
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
 
-        val scene = arSceneView.scene
-
         val distance = activity?.findViewById<TextView>(R.id.distance)
         val diopters = activity?.findViewById<TextView>(R.id.diopters)
+        val camera = activity?.findViewById<FloatingActionButton>(R.id.camera)
 
-        scene.addOnUpdateListener { frameTime ->
+        camera?.setOnClickListener { view ->
+            parentFragment
+            Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
+
+        arSceneView.scene.addOnUpdateListener { frameTime ->
             run {
                 val now = System.currentTimeMillis()
 

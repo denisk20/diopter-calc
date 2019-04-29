@@ -21,6 +21,6 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_margin">30dp</item>
-
+        <item name="layout_dodgeInsetEdges">bottom</item>
     </style>
 </resources>
