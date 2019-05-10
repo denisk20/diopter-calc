@@ -20,9 +20,6 @@ import java.util.EnumSet
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
 class FaceArFragment : ArFragment() {
 
-    private val formatDist = DecimalFormat("#.0 cm")
-    private val formatDiopt = DecimalFormat("-#.0 diopt")
-
     private var lastUpdate = -1L
     private val UPDATE_INTERVAL = 500L //ms
 
@@ -63,16 +60,6 @@ class FaceArFragment : ArFragment() {
         // the face mesh occlusion works correctly.
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
 
-        val distance = activity?.findViewById<TextView>(R.id.distance)
-        val diopters = activity?.findViewById<TextView>(R.id.diopters)
-        val camera = activity?.findViewById<FloatingActionButton>(R.id.camera)
-
-        camera?.setOnClickListener { view ->
-            parentFragment
-            Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-
         arSceneView.scene.addOnUpdateListener { frameTime ->
             run {
                 val now = System.currentTimeMillis()
@@ -87,8 +74,9 @@ class FaceArFragment : ArFragment() {
                     val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
                     val distMeter =
                         Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())
-                    distance?.setText(formatDist.format(distMeter * 100))
-                    diopters?.setText(formatDiopt.format(1/distMeter))
+                    val dist = distMeter * 100
+                    val diopts = 1 / distMeter
+                    (parentFragment as MeasureFragment).update(dist, diopts)
                 }
 
                 lastUpdate = now

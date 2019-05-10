@@ -49,16 +49,15 @@
         />
 
         <TextView
-                android:id="@+id/distance"
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|start"
+                android:text="@{holder.distanceStr}"
         />
 
         <TextView
-                android:id="@+id/diopters"
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|end"
-                android:text="2.5dp"
+                android:text="@{holder.dioptersStr}"
         />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
