@@ -1,9 +1,10 @@
 package org.endmyopia.calc
 
-import androidx.lifecycle.LiveData
+import android.content.res.ColorStateList
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.DecimalFormat
 
 /**
@@ -29,6 +30,19 @@ class MeasureStateHolder : ViewModel() {
     val dioptersStr: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
+
+    val hasTakenMeasurement: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    object CommonBindingUtil {
+        @JvmStatic
+        @BindingAdapter("backgroundTint")
+        fun setBackgroundTint(fab: FloatingActionButton, tint: Int) {
+            fab.backgroundTintList = ColorStateList.valueOf(tint)
+        }
+    }
+
 
 
     fun update(dist: Double, diopts: Double) {

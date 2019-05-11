@@ -5,17 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
-import java.text.DecimalFormat
-import java.util.EnumSet
+import java.util.*
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
 class FaceArFragment : ArFragment() {

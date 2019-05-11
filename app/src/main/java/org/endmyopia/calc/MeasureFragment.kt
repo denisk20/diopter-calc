@@ -1,22 +1,14 @@
 package org.endmyopia.calc
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import com.google.ar.core.AugmentedFace
-import com.google.ar.sceneform.rendering.Renderable
 import kotlinx.android.synthetic.main.fragment_measure.*
 import org.endmyopia.calc.databinding.FragmentMeasureBinding
-import java.text.DecimalFormat
 
 class MeasureFragment : Fragment() {
 
@@ -40,10 +32,16 @@ class MeasureFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         camera.setOnClickListener { view ->
-            Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-
-
+            val arView: FaceArFragment = childFragmentManager.findFragmentById(R.id.measure_arView) as FaceArFragment
+            if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
+                arView.arSceneView.resume()
+                dataBinding.holder?.hasTakenMeasurement?.postValue(false)
+            } else {
+                arView.arSceneView.pause()
+                dataBinding.holder?.hasTakenMeasurement?.postValue(true)
+                Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+            }
         }
     }
 
