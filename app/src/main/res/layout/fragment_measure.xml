@@ -45,19 +45,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
                 android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimary : @color/colorAccent}"
-                app:srcCompat="@android:drawable/ic_menu_camera"
+                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
+                app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
         />
 
         <TextView
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|start"
+                android:textSize="@{holder.hasTakenMeasurement ? 30 : 24}"
+                android:textColor="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
                 android:text="@{holder.distanceStr}"
         />
 
         <TextView
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|end"
+                android:textSize="@{holder.hasTakenMeasurement ? 30 : 24}"
+                android:textColor="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
                 android:text="@{holder.dioptersStr}"
         />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

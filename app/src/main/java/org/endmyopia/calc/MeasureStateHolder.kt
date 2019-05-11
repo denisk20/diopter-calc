@@ -1,6 +1,9 @@
 package org.endmyopia.calc
 
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
+import android.util.TypedValue
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,21 +38,31 @@ class MeasureStateHolder : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    object CommonBindingUtil {
-        @JvmStatic
-        @BindingAdapter("backgroundTint")
-        fun setBackgroundTint(fab: FloatingActionButton, tint: Int) {
-            fab.backgroundTintList = ColorStateList.valueOf(tint)
-        }
-    }
-
-
-
     fun update(dist: Double, diopts: Double) {
         distanceVal.postValue(dist)
         dioptersVal.postValue(diopts)
 
         distanceStr.postValue(formatDist.format(dist))
         dioptersStr.postValue(formatDiopt.format(diopts))
+    }
+
+    object CommonBindingUtil {
+        @JvmStatic
+        @BindingAdapter("backgroundTint")
+        fun setBackgroundTint(fab: FloatingActionButton, tint: Int) {
+            fab.backgroundTintList = ColorStateList.valueOf(tint)
+        }
+
+        @JvmStatic
+        @BindingAdapter("srcCompat")
+        fun setSrcCompat(fab: FloatingActionButton, drawable: Drawable) {
+            fab.setImageDrawable(drawable)
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:textSize")
+        fun setTextSize(textView: TextView, textSize: Float) {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
+        }
     }
 }
