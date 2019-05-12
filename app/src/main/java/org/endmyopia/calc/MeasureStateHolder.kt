@@ -16,7 +16,7 @@ import java.text.DecimalFormat
  */
 class MeasureStateHolder : ViewModel() {
     private val formatDist = DecimalFormat("#.0 cm")
-    private val formatDiopt = DecimalFormat("-#.0 diopt")
+    private val formatDiopt = DecimalFormat("-#.0 dpt")
 
     val distanceVal: MutableLiveData<Double> by lazy {
         MutableLiveData<Double>()

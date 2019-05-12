@@ -3,8 +3,11 @@ package org.endmyopia.calc
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.ViewModelProviders
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
@@ -56,6 +59,19 @@ class FaceArFragment : ArFragment() {
         // the face mesh occlusion works correctly.
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
 
+        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
+
+        holder.hasTakenMeasurement.observe(activity!!, androidx.lifecycle.Observer {
+            if (it) {
+                arSceneView.pause()
+                arSceneView.visibility = GONE
+            } else {
+                arSceneView.resume()
+                arSceneView.visibility = VISIBLE
+            }
+        })
+
+
         arSceneView.scene.addOnUpdateListener { frameTime ->
             run {
                 val now = System.currentTimeMillis()
@@ -77,6 +93,19 @@ class FaceArFragment : ArFragment() {
 
                 lastUpdate = now
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
+        if (holder.hasTakenMeasurement.value!!) {
+            arSceneView.pause()
+            arSceneView.visibility = GONE
+        } else {
+            arSceneView.resume()
+            arSceneView.visibility = VISIBLE
         }
     }
 }

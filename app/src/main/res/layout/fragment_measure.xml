@@ -5,11 +5,13 @@
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="holder" type="org.endmyopia.calc.MeasureStateHolder"/>
+        <import type="android.view.View"/>
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MeasureFragment"
+            android:background="@color/white"
     >
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -28,6 +30,13 @@
                     android:textSize="60sp"
             />
 
+            <ImageView android:id="@+id/capture" android:layout_width="150dp" android:layout_height="150dp"
+                       android:visibility="@{holder.hasTakenMeasurement ? View.VISIBLE : View.GONE}"
+                       android:src="@drawable/ic_check_circle_black_24dp"
+                       app:layout_constraintLeft_toLeftOf="parent"
+                       app:layout_constraintRight_toRightOf="parent"
+                       app:layout_constraintTop_toTopOf="parent"
+                       app:layout_constraintBottom_toBottomOf="parent"/>
             <fragment
                     android:id="@+id/measure_arView"
                     android:layout_width="match_parent"
@@ -45,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
                 android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
+                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
                 app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
         />
 
@@ -53,7 +62,7 @@
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|start"
                 android:textSize="@{holder.hasTakenMeasurement ? 30 : 24}"
-                android:textColor="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
+                android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
                 android:text="@{holder.distanceStr}"
         />
 
@@ -61,7 +70,7 @@
                 style="@style/FloatingLabel"
                 android:layout_gravity="bottom|end"
                 android:textSize="@{holder.hasTakenMeasurement ? 30 : 24}"
-                android:textColor="@{holder.hasTakenMeasurement ? @color/yellow : @color/colorAccent}"
+                android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
                 android:text="@{holder.dioptersStr}"
         />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

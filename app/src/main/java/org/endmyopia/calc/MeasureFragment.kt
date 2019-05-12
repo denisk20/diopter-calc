@@ -23,7 +23,7 @@ class MeasureFragment : Fragment() {
 
         dataBinding = FragmentMeasureBinding.bind(view)
         dataBinding.lifecycleOwner = this
-        val holder: MeasureStateHolder = ViewModelProviders.of(this).get(MeasureStateHolder::class.java)
+        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
         dataBinding.holder = holder
 
         return view
@@ -32,12 +32,11 @@ class MeasureFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         camera.setOnClickListener { view ->
-            val arView: FaceArFragment = childFragmentManager.findFragmentById(R.id.measure_arView) as FaceArFragment
             if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
-                arView.arSceneView.resume()
+                //arView.arSceneView.resume()
                 dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             } else {
-                arView.arSceneView.pause()
+                //arView.arSceneView.pause()
                 dataBinding.holder?.hasTakenMeasurement?.postValue(true)
                 Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
