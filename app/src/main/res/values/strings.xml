@@ -10,6 +10,6 @@
     <string name="progress">Progress</string>
     <string name="settings">Settings</string>
 
-    <string name="measurement_taken">Measurement\ntaken</string>
+    <string name="measurement_taken">Measurement taken</string>
     <string name="focus">FOCUS</string>
 </resources>
