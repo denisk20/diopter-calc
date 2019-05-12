@@ -1,5 +1,6 @@
 package org.endmyopia.calc
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import org.endmyopia.calc.databinding.FragmentMeasureBinding
 class MeasureFragment : Fragment() {
 
     lateinit var dataBinding: FragmentMeasureBinding
+    lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,17 +33,26 @@ class MeasureFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        mediaPlayer = MediaPlayer.create(context, R.raw.dingaling)
+
         camera.setOnClickListener { view ->
             if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
-                //arView.arSceneView.resume()
                 dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             } else {
-                //arView.arSceneView.pause()
+                if (!mediaPlayer.isPlaying) {
+                    mediaPlayer.start()
+                }
                 dataBinding.holder?.hasTakenMeasurement?.postValue(true)
                 Snackbar.make(view, R.string.measurement_taken, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer.stop()
+        mediaPlayer.release()
     }
 
     fun update(dist: Double, diopts: Double) {
