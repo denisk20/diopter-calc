@@ -38,8 +38,7 @@ class MeasureFragment : Fragment() {
             if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
                 dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             } else {
-                dataBinding.holder?.hasTakenMeasurement?.postValue(true)
-                ding()
+                takeMeasurement()
             }
         }
     }
@@ -58,5 +57,10 @@ class MeasureFragment : Fragment() {
 
     fun update(dist: Double, diopts: Double) {
         dataBinding.holder?.update(dist, diopts)
+    }
+
+    fun takeMeasurement() {
+        dataBinding.holder?.hasTakenMeasurement?.postValue(true)
+        ding()
     }
 }

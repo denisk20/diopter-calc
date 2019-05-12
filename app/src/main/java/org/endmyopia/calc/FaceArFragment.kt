@@ -20,6 +20,11 @@ import java.util.*
 class FaceArFragment : ArFragment() {
 
     private var lastUpdate = -1L
+
+    private var faceFound = false
+    private var consequentEmptyFrames = 0
+    private val CONSEQUENT_FRAMES_COUNT_LIMIT = 3
+
     private val UPDATE_INTERVAL = 500L //ms
 
     override fun getSessionConfiguration(session: Session): Config {
@@ -80,6 +85,16 @@ class FaceArFragment : ArFragment() {
                 }
                 val faceList = arSceneView.session!!.getAllTrackables(AugmentedFace::class.java)
 
+                if (faceList.size > 0) {
+                    faceFound = true
+                } else {
+                    consequentEmptyFrames++
+                    if (faceFound && consequentEmptyFrames >= CONSEQUENT_FRAMES_COUNT_LIMIT) {
+                        faceFound = false;
+                        consequentEmptyFrames = 0
+                        (parentFragment as MeasureFragment).takeMeasurement()
+                    }
+                }
                 // Make new AugmentedFaceNodes for any new faces.
                 for (face in faceList) {
                     val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
