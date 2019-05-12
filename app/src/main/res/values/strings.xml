@@ -10,7 +10,6 @@
     <string name="progress">Progress</string>
     <string name="settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="measurement_taken">Measurement taken</string>
+    <string name="measurement_taken">Measurement\ntaken</string>
+    <string name="focus">FOCUS</string>
 </resources>

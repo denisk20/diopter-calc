@@ -21,13 +21,14 @@
             <TextView
                     android:id="@+id/measure_text"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:text="FOCUS"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@{holder.hasTakenMeasurement ? 100 : 0}"
+                    android:text="@{holder.hasTakenMeasurement ? @string/measurement_taken : @string/focus}"
                     android:gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="60sp"
+                    android:textSize="@{holder.hasTakenMeasurement ? 30 : 60}"
             />
 
             <ImageView android:id="@+id/capture" android:layout_width="150dp" android:layout_height="150dp"
@@ -54,7 +55,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
                 android:layout_margin="@dimen/fab_margin"
-                android:soundEffectsEnabled="false"
                 app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
                 app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
         />

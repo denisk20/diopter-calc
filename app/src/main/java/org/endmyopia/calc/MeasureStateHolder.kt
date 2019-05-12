@@ -3,6 +3,7 @@ package org.endmyopia.calc
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
@@ -63,6 +64,13 @@ class MeasureStateHolder : ViewModel() {
         @BindingAdapter("android:textSize")
         fun setTextSize(textView: TextView, textSize: Float) {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:layout_marginTop")
+        fun setMarginTop(textView: TextView, value: Float) {
+            val layoutParams: ViewGroup.MarginLayoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.topMargin = value.toInt()
         }
     }
 }

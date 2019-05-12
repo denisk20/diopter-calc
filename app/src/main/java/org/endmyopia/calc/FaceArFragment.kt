@@ -54,7 +54,6 @@ class FaceArFragment : ArFragment() {
     override fun onStart() {
         super.onStart()
 
-
         // This is important to make sure that the camera stream renders first so that
         // the face mesh occlusion works correctly.
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
