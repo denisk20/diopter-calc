@@ -66,13 +66,7 @@ class FaceArFragment : ArFragment() {
         val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
 
         holder.hasTakenMeasurement.observe(activity!!, androidx.lifecycle.Observer {
-            if (it) {
-                arSceneView.pause()
-                arSceneView.visibility = GONE
-            } else {
-                arSceneView.resume()
-                arSceneView.visibility = VISIBLE
-            }
+            handeTakenMeasurement(it)
         })
 
 
@@ -114,10 +108,16 @@ class FaceArFragment : ArFragment() {
         super.onResume()
 
         val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
-        if (holder.hasTakenMeasurement.value!!) {
+        val hasTakenIt = holder.hasTakenMeasurement.value!!
+        handeTakenMeasurement(hasTakenIt)
+    }
+
+    private fun handeTakenMeasurement(hasTakenIt: Boolean) {
+        if (hasTakenIt) {
             arSceneView.pause()
             arSceneView.visibility = GONE
         } else {
+            consequentEmptyFrames = 0;
             arSceneView.resume()
             arSceneView.visibility = VISIBLE
         }
