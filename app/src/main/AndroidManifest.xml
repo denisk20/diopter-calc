@@ -18,7 +18,7 @@
         <!-- This tag indicates that this application requires ARCore. This results in the
            application only being visible in the Google Play Store on devices that support
            ARCore. -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
+        <meta-data android:name="com.google.ar.core" android:value="optional"/>
 
         <activity
                 android:name=".MainActivity"

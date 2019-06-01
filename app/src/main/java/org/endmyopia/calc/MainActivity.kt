@@ -1,35 +1,29 @@
 package org.endmyopia.calc
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
+import android.os.Handler
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
-import com.google.ar.core.AugmentedFace
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.ux.AugmentedFaceNode
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.fragment_measure.*
-import java.text.DecimalFormat
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private var arCoreInstallRequested = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!checkIsSupportedDeviceOrFinish(this)) {
+        if (!checkIsSupportedDeviceOrFinish()) {
             return
         }
 
@@ -47,6 +41,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val item = nav_view.menu.get(0)
         item.setChecked(true)
         onNavigationItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, results: IntArray) {
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            Toast.makeText(this, getString(R.string.camera_permission), Toast.LENGTH_LONG)
+                .show()
+            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+                // Permission denied with checking "Do not ask again".
+                CameraPermissionHelper.launchPermissionSettings(this)
+            }
+            finish()
+        }
     }
 
     override fun onBackPressed() {
@@ -88,19 +98,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      *
      * Finishes the activity if Sceneform can not run
      */
-    fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean {
-        if (ArCoreApk.getInstance().checkAvailability(activity) === ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE) {
-            Toast.makeText(activity, "Augmented Faces requires ArCore", Toast.LENGTH_LONG).show()
-            activity.finish()
+    fun checkIsSupportedDeviceOrFinish(): Boolean {
+        val availability = ArCoreApk.getInstance().checkAvailability(this)
+        if (availability.isTransient) {
+            // Re-query at 5Hz while compatibility is checked in the background.
+            Handler().postDelayed({ checkIsSupportedDeviceOrFinish() }, 200)
+
+        }
+
+        if (availability in listOf(
+                ArCoreApk.Availability.SUPPORTED_NOT_INSTALLED,
+                ArCoreApk.Availability.SUPPORTED_APK_TOO_OLD
+            )
+        ) {
+            ArCoreApk.getInstance().requestInstall(this, true)
+        }
+        if (ArCoreApk.getInstance().checkAvailability(this) === ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE) {
+            Toast.makeText(this, "Diopter Calc requires ArCore", Toast.LENGTH_LONG).show()
+            finish()
             return false
         }
-        val openGlVersionString = (activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+        val openGlVersionString = (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
             .deviceConfigurationInfo
             .glEsVersion
         if (java.lang.Double.parseDouble(openGlVersionString) < 3.0) {
-            Toast.makeText(activity, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
                 .show()
-            activity.finish()
+            finish()
             return false
         }
         return true

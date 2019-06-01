@@ -12,4 +12,5 @@
 
     <string name="measurement_taken">Measurement taken</string>
     <string name="focus">FOCUS</string>
+    <string name="camera_permission">Camera permission is needed to run this application</string>
 </resources>
