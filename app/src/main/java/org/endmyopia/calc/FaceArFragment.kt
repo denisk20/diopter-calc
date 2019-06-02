@@ -1,6 +1,7 @@
 package org.endmyopia.calc
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -14,6 +15,7 @@ import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
+import java.text.DecimalFormat
 import java.util.*
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
@@ -26,6 +28,8 @@ class FaceArFragment : ArFragment() {
     private val CONSEQUENT_FRAMES_COUNT_LIMIT = 3
 
     private val UPDATE_INTERVAL = 500L //ms
+
+    private val floatFormat = DecimalFormat("#.00")
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
@@ -70,6 +74,7 @@ class FaceArFragment : ArFragment() {
         })
 
 
+        val vector = FloatArray(3)
         arSceneView.scene.addOnUpdateListener { frameTime ->
             run {
                 val now = System.currentTimeMillis()
@@ -91,12 +96,29 @@ class FaceArFragment : ArFragment() {
                 }
                 // Make new AugmentedFaceNodes for any new faces.
                 for (face in faceList) {
-                    val translation = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).translation
+                    val nosePose = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP)
+                    val noseTranslation = nosePose.translation
                     val distMeter =
-                        Math.sqrt((translation[0] * translation[0] + translation[1] * translation[1] + translation[2] * translation[2]).toDouble())
+                        Math.sqrt((noseTranslation[0] * noseTranslation[0] + noseTranslation[1] * noseTranslation[1] + noseTranslation[2] * noseTranslation[2]).toDouble())
                     val dist = distMeter * 100
                     val diopts = 1 / distMeter
                     (parentFragment as MeasureFragment).update(dist, diopts)
+
+                    nosePose.getTransformedAxis(0, 1f, vector, 0)
+                    val horizontalDeviation = vector[2];
+
+                    nosePose.getTransformedAxis(1, 1f, vector, 0)
+                    val verticalDeviation = vector[2];
+
+                    Log.e("===horiz:", horizontalDeviation.toString())
+                    Log.e("===vert:", verticalDeviation.toString())
+
+                    holder.orientation.postValue(
+                        floatFormat.format(horizontalDeviation) + ", " + floatFormat.format(
+                            verticalDeviation
+                        )
+                    )
+                    Log.e("===", "_____________")
                 }
 
                 lastUpdate = now

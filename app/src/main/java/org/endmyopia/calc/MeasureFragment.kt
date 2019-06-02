@@ -45,7 +45,7 @@ class MeasureFragment : Fragment() {
 
     fun ding() {
         if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
+            //mediaPlayer.start()
         }
     }
 
