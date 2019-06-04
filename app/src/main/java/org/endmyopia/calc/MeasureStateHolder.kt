@@ -39,10 +39,6 @@ class MeasureStateHolder : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    val orientation: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
-
     fun update(dist: Double, diopts: Double) {
         distanceVal.postValue(dist)
         dioptersVal.postValue(diopts)

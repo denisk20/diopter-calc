@@ -1,7 +1,6 @@
 package org.endmyopia.calc
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -103,22 +102,6 @@ class FaceArFragment : ArFragment() {
                     val dist = distMeter * 100
                     val diopts = 1 / distMeter
                     (parentFragment as MeasureFragment).update(dist, diopts)
-
-                    nosePose.getTransformedAxis(0, 1f, vector, 0)
-                    val horizontalDeviation = vector[2];
-
-                    nosePose.getTransformedAxis(1, 1f, vector, 0)
-                    val verticalDeviation = vector[2];
-
-                    Log.e("===horiz:", horizontalDeviation.toString())
-                    Log.e("===vert:", verticalDeviation.toString())
-
-                    holder.orientation.postValue(
-                        floatFormat.format(horizontalDeviation) + ", " + floatFormat.format(
-                            verticalDeviation
-                        )
-                    )
-                    Log.e("===", "_____________")
                 }
 
                 lastUpdate = now

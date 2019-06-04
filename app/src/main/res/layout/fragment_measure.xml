@@ -46,30 +46,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/measure_text"
                     app:layout_constraintBottom_toBottomOf="parent"
             />
-
-            <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/guide"
-                    android:visibility="@{holder.hasTakenMeasurement ? View.GONE : View.VISIBLE}"
-                    app:layout_constraintTop_toTopOf="@+id/measure_arView"
-                    app:layout_constraintBottom_toBottomOf="@+id/measure_arView"
-                    app:layout_constraintLeft_toLeftOf="@+id/measure_arView"
-                    app:layout_constraintRight_toRightOf="@+id/measure_arView"
-                    app:layout_constraintVertical_bias="0.45"
-                    app:layout_constraintHorizontal_bias="0.6"
-            />
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{holder.orientation}"
-                    android:textSize="30sp"
-                    android:textColor="@color/colorAccent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/measure_text"
-            />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!--Do not remove this fab, without it the video overlaps the navigation drawer-->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
