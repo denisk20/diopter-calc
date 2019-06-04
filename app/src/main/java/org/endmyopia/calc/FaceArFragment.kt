@@ -73,8 +73,7 @@ class FaceArFragment : ArFragment() {
         })
 
 
-        val vector = FloatArray(3)
-        arSceneView.scene.addOnUpdateListener { frameTime ->
+        arSceneView.scene.addOnUpdateListener {
             run {
                 val now = System.currentTimeMillis()
 

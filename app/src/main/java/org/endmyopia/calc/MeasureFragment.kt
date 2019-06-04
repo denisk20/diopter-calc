@@ -34,7 +34,7 @@ class MeasureFragment : Fragment() {
         super.onStart()
         mediaPlayer = MediaPlayer.create(context, R.raw.dingaling)
 
-        camera.setOnClickListener { view ->
+        camera.setOnClickListener {
             if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
                 dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             } else {

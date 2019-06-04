@@ -24,6 +24,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@{holder.hasTakenMeasurement ? 100 : 0}"
                     android:text="@{holder.hasTakenMeasurement ? @string/measurement_taken : @string/focus}"
+                    android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/black}"
+                    android:textStyle="bold"
                     android:gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
