@@ -3,20 +3,39 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def publisherJson = System.getProperty("user.home") + '/.ssh/endmyopia-play.json'
+if(new File(publisherJson).exists()) {
+    play {
+        jsonFile = file(publisherJson)
+    }
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "org.endmyopia.calc"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionName "0.1"
+        versionCode Integer.parseInt(getBuildNumberFile().text)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            def STUB = "stub"
+            //these variables should be defined in ~/.gradle/gradle.properties file
+            storeFile file(project.hasProperty("EM_RELEASE_STORE_FILE") ? RELEASE_STORE_FILE : STUB);
+            storePassword project.hasProperty("EM_RELEASE_STORE_PASSWORD") ? RELEASE_STORE_PASSWORD : STUB;
+            keyAlias project.hasProperty("EM_RELEASE_KEY_ALIAS") ? RELEASE_KEY_ALIAS : STUB;
+            keyPassword project.hasProperty("EM_RELEASE_KEY_PASSWORD") ? RELEASE_KEY_PASSWORD : STUB;
+        }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -28,11 +47,27 @@ android {
     }
 }
 
+File getBuildNumberFile() {
+    return new File(project.projectDir.path + '/build-number.txt')
+}
+
+void incrementBuildNumber() {
+    def file = getBuildNumberFile()
+    int buildNumber = file.text.toInteger() + 1;
+    file.write("" + buildNumber);
+}
+
+task incrementBuildNumber {
+    doLast {
+        incrementBuildNumber()
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
-    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha02'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01"
