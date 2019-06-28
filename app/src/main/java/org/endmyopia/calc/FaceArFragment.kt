@@ -14,7 +14,6 @@ import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
-import java.text.DecimalFormat
 import java.util.*
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
@@ -27,8 +26,6 @@ class FaceArFragment : ArFragment() {
     private val CONSEQUENT_FRAMES_COUNT_LIMIT = 3
 
     private val UPDATE_INTERVAL = 500L //ms
-
-    private val floatFormat = DecimalFormat("#.00")
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
