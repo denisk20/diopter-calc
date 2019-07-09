@@ -4,25 +4,16 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
-import com.google.ar.core.AugmentedFace
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.ux.AugmentedFaceNode
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.fragment_measure.*
-import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
