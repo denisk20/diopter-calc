@@ -50,15 +50,31 @@
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!--Do not remove this fab, without it the video overlaps the navigation drawer-->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/camera"
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_gravity="bottom|center"
-                android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
-                app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
-        />
+                android:layout_marginBottom="@{holder.hasTakenMeasurement ? 64 : 16}"
+        >
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/reTake"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{holder.hasTakenMeasurement ? View.VISIBLE : View.GONE}"
+                    app:backgroundTint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_add"
+            />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
+                    app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
+            />
+        </LinearLayout>
 
         <TextView
                 style="@style/FloatingLabel"

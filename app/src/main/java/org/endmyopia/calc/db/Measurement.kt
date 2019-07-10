@@ -12,6 +12,6 @@ data class Measurement(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val date: Long,
-    val distance: Double,
+    val distanceMeters: Double,
     val calibrationCoeff: Double = 0.0
 )

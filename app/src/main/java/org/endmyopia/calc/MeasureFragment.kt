@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_measure.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.endmyopia.calc.databinding.FragmentMeasureBinding
+import org.endmyopia.calc.db.AppDatabase
+import org.endmyopia.calc.db.Measurement
 
 class MeasureFragment : Fragment() {
 
-    lateinit var dataBinding: FragmentMeasureBinding
-    lateinit var mediaPlayer: MediaPlayer
+    private lateinit var dataBinding: FragmentMeasureBinding
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,17 +39,16 @@ class MeasureFragment : Fragment() {
         mediaPlayer = MediaPlayer.create(context, R.raw.dingaling)
 
         camera.setOnClickListener {
-            if (dataBinding.holder?.hasTakenMeasurement?.value!!) {
-                dataBinding.holder?.hasTakenMeasurement?.postValue(false)
-            } else {
+            if (dataBinding.holder?.hasTakenMeasurement?.value!!)
+                reTakeMeasurement()
+            else
                 takeMeasurement()
-            }
         }
     }
 
-    fun ding() {
+    private fun ding() {
         if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
+            //mediaPlayer.start()
         }
     }
 
@@ -55,12 +58,40 @@ class MeasureFragment : Fragment() {
         mediaPlayer.release()
     }
 
-    fun update(dist: Double, diopts: Double) {
-        dataBinding.holder?.update(dist, diopts)
+    fun update(distMeters: Double) {
+        dataBinding.holder?.update(distMeters)
     }
 
     fun takeMeasurement() {
         dataBinding.holder?.hasTakenMeasurement?.postValue(true)
-        ding()
+        activity?.let {
+            GlobalScope.launch {
+                val id = AppDatabase.getInstance(it.application).getMeasurementDao().insert(
+                    Measurement(
+                        0L,
+                        System.currentTimeMillis(),
+                        dataBinding.holder?.distanceMetersVal?.value ?: 0.0,
+                        0.0
+                    )
+                )
+                debug("measurementId: $id")
+                dataBinding.holder?.lastPersistedMeasurementId = id
+            }
+            ding()
+        }
+    }
+
+    private fun reTakeMeasurement() {
+        dataBinding.holder?.hasTakenMeasurement?.postValue(false)
+        activity?.let { activity ->
+            dataBinding.holder?.let { holder ->
+                GlobalScope.launch {
+                    AppDatabase.getInstance(activity.application).getMeasurementDao().deleteById(
+                        holder.lastPersistedMeasurementId
+                    )
+                }
+
+            }
+        }
     }
 }

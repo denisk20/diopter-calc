@@ -93,11 +93,9 @@ class FaceArFragment : ArFragment() {
                 for (face in faceList) {
                     val nosePose = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP)
                     val noseTranslation = nosePose.translation
-                    val distMeter =
+                    val distMeters =
                         Math.sqrt((noseTranslation[0] * noseTranslation[0] + noseTranslation[1] * noseTranslation[1] + noseTranslation[2] * noseTranslation[2]).toDouble())
-                    val dist = distMeter * 100
-                    val diopts = 1 / distMeter
-                    (parentFragment as MeasureFragment).update(dist, diopts)
+                    (parentFragment as MeasureFragment).update(distMeters)
                 }
 
                 lastUpdate = now

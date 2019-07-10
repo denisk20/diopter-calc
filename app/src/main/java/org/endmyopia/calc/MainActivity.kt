@@ -51,17 +51,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        when (item.itemId) {
-            R.id.measure -> {
-                fragmentTransaction.replace(R.id.content, MeasureFragment())
+        fragmentTransaction.replace(
+            R.id.content,
+            when (item.itemId) {
+                R.id.measure -> {
+                    MeasureFragment()
+                }
+                R.id.progress -> {
+                    ProgressFragment()
+                }
+                R.id.settings -> {
+                    SettingsFragment()
+                }
+                else -> throw IllegalArgumentException("Unknown menu item ${item.itemId}")
             }
-            R.id.progress -> {
-                fragmentTransaction.replace(R.id.content, ProgressFragment())
-            }
-            R.id.settings -> {
-                fragmentTransaction.replace(R.id.content, SettingsFragment())
-            }
-        }
+        )
 
         fragmentTransaction.commit()
         drawer_layout.closeDrawer(GravityCompat.START)

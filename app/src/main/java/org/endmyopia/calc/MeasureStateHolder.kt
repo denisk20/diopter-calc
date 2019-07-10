@@ -1,8 +1,11 @@
 package org.endmyopia.calc
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -10,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.DecimalFormat
+
 
 /**
  * @author denisk
@@ -19,7 +23,7 @@ class MeasureStateHolder : ViewModel() {
     private val formatDist = DecimalFormat("#.0 cm")
     private val formatDiopt = DecimalFormat("-#.00 dpt")
 
-    val distanceVal: MutableLiveData<Double> by lazy {
+    val distanceMetersVal: MutableLiveData<Double> by lazy {
         MutableLiveData<Double>()
     }
 
@@ -39,11 +43,15 @@ class MeasureStateHolder : ViewModel() {
         MutableLiveData<Boolean>(false)
     }
 
-    fun update(dist: Double, diopts: Double) {
-        distanceVal.postValue(dist)
+    var lastPersistedMeasurementId = 0L
+
+    fun update(distMeters: Double) {
+        val diopts = 1 / distMeters
+
+        distanceMetersVal.postValue(distMeters)
         dioptersVal.postValue(diopts)
 
-        distanceStr.postValue(formatDist.format(dist))
+        distanceStr.postValue(formatDist.format(distMeters * 100))
         dioptersStr.postValue(formatDiopt.format(diopts))
     }
 
@@ -68,9 +76,19 @@ class MeasureStateHolder : ViewModel() {
 
         @JvmStatic
         @BindingAdapter("android:layout_marginTop")
-        fun setMarginTop(textView: TextView, value: Float) {
-            val layoutParams: ViewGroup.MarginLayoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+        fun setMarginTop(view: View, value: Float) {
+            val layoutParams: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
             layoutParams.topMargin = value.toInt()
         }
+
+        @JvmStatic
+        @BindingAdapter("android:layout_marginBottom")
+        fun setMarginBottom(view: View, valueDp: Float) {
+            val layoutParams: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.bottomMargin = dpToPx(valueDp, view.context).toInt()
+        }
+
+        private fun dpToPx(dp: Float, context: Context) =
+            dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
 }
