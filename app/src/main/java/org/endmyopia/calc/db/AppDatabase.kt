@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 /**
  * @author denisk
@@ -13,6 +14,7 @@ import androidx.room.RoomDatabase
     version = 1,
     entities = [Measurement::class]
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getMeasurementDao(): MeasurementDao
 

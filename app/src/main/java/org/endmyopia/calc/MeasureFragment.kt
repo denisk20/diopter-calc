@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_measure.*
@@ -44,6 +46,21 @@ class MeasureFragment : Fragment() {
             else
                 takeMeasurement()
         }
+
+        reTake.setOnClickListener {
+            dataBinding.holder?.hasTakenMeasurement?.postValue(false)
+        }
+
+        leftEye.setOnClickListener(getEyeModeChangeFn(MeasurementMode.LEFT, R.string.left_eye))
+        rightEye.setOnClickListener(getEyeModeChangeFn(MeasurementMode.RIGHT, R.string.right_eye))
+        bothEyes.setOnClickListener(getEyeModeChangeFn(MeasurementMode.BOTH, R.string.both_eyes))
+    }
+
+    private fun getEyeModeChangeFn(mode: MeasurementMode, @StringRes resId: Int): (View) -> Unit {
+        return {
+            dataBinding.holder?.mode?.postValue(mode)
+            Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun ding() {
@@ -69,6 +86,7 @@ class MeasureFragment : Fragment() {
                 val id = AppDatabase.getInstance(it.application).getMeasurementDao().insert(
                     Measurement(
                         0L,
+                        dataBinding.holder?.mode?.value ?: MeasurementMode.BOTH,
                         System.currentTimeMillis(),
                         dataBinding.holder?.distanceMetersVal?.value ?: 0.0,
                         0.0

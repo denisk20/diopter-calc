@@ -6,6 +6,7 @@
     <data>
         <variable name="holder" type="org.endmyopia.calc.MeasureStateHolder"/>
         <import type="android.view.View"/>
+        <import type="org.endmyopia.calc.MeasurementMode"/>
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -49,7 +50,45 @@
                     app:layout_constraintBottom_toBottomOf="parent"
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <!--Do not remove this fab, without it the video overlaps the navigation drawer-->
+        <!--Do not remove fabs, without it the video overlaps the navigation drawer-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/leftEye"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/gray : (holder.mode == MeasurementMode.LEFT ? @color/colorAccent : @color/colorPrimaryDark)}"
+                android:visibility="@{holder.hasTakenMeasurement ? (holder.mode == MeasurementMode.LEFT ? View.VISIBLE : View.GONE) : View.VISIBLE}"
+                android:layout_marginBottom="@{holder.hasTakenMeasurement ? holder.EYES_HIGH : holder.EYES_LOW}"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="bottom|start"
+                app:srcCompat="@drawable/ic_eye"
+                app:fabEnabled="@{! holder.hasTakenMeasurement}"
+        />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/bothEyes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/gray : (holder.mode == MeasurementMode.BOTH ? @color/colorAccent : @color/colorPrimaryDark)}"
+                android:visibility="@{holder.hasTakenMeasurement ? (holder.mode == MeasurementMode.BOTH ? View.VISIBLE : View.GONE) : View.VISIBLE}"
+                android:layout_marginBottom="@{holder.hasTakenMeasurement ? holder.EYES_HIGH : holder.EYES_LOW}"
+                android:layout_gravity="bottom|center"
+                app:srcCompat="@drawable/ic_two"
+                app:fabEnabled="@{! holder.hasTakenMeasurement}"
+        />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/rightEye"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@{holder.hasTakenMeasurement ? @color/gray : (holder.mode == MeasurementMode.RIGHT ? @color/colorAccent : @color/colorPrimaryDark)}"
+                android:visibility="@{holder.hasTakenMeasurement ? (holder.mode == MeasurementMode.RIGHT ? View.VISIBLE : View.GONE) : View.VISIBLE}"
+                android:layout_marginBottom="@{holder.hasTakenMeasurement ? holder.EYES_HIGH : holder.EYES_LOW}"
+                android:layout_marginEnd="16dp"
+                android:layout_gravity="bottom|end"
+                app:srcCompat="@drawable/ic_eye"
+                app:fabEnabled="@{! holder.hasTakenMeasurement}"
+        />
+
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,6 +100,7 @@
                     android:id="@+id/reTake"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
                     android:visibility="@{holder.hasTakenMeasurement ? View.VISIBLE : View.GONE}"
                     app:backgroundTint="@color/colorPrimaryDark"
                     app:srcCompat="@drawable/ic_add"
@@ -70,7 +110,7 @@
                     android:id="@+id/camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:visibility="@{holder.distanceMetersVal > 0.01 ? View.VISIBLE : View.GONE}"
                     app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
                     app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
             />

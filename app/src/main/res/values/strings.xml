@@ -12,4 +12,7 @@
 
     <string name="measurement_taken">Measurement taken</string>
     <string name="focus">FOCUS</string>
+    <string name="left_eye">Measuring left eye</string>
+    <string name="right_eye">Measuring right eye</string>
+    <string name="both_eyes">Measuring both eyes</string>
 </resources>

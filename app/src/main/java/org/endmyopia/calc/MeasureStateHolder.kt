@@ -20,6 +20,9 @@ import java.text.DecimalFormat
  * @since 2019-04-29.
  */
 class MeasureStateHolder : ViewModel() {
+    val EYES_LOW = 76
+    val EYES_HIGH = 128
+
     private val formatDist = DecimalFormat("#.0 cm")
     private val formatDiopt = DecimalFormat("-#.00 dpt")
 
@@ -41,6 +44,10 @@ class MeasureStateHolder : ViewModel() {
 
     val hasTakenMeasurement: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
+    }
+
+    val mode: MutableLiveData<MeasurementMode> by lazy {
+        MutableLiveData<MeasurementMode>(MeasurementMode.BOTH)
     }
 
     var lastPersistedMeasurementId = 0L
@@ -88,6 +95,11 @@ class MeasureStateHolder : ViewModel() {
             layoutParams.bottomMargin = dpToPx(valueDp, view.context).toInt()
         }
 
+        @JvmStatic
+        @BindingAdapter("fabEnabled")
+        fun fabEnabled(view: FloatingActionButton, enabled: Boolean) {
+            view.isEnabled = enabled
+        }
         private fun dpToPx(dp: Float, context: Context) =
             dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
