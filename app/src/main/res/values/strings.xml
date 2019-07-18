@@ -10,9 +10,11 @@
     <string name="progress">Progress</string>
     <string name="settings">Settings</string>
 
-    <string name="measurement_taken">Measurement taken</string>
+    <string name="measurement_taken">Measurement for %s is saved</string>
     <string name="focus">FOCUS</string>
-    <string name="left_eye">Measuring left eye</string>
-    <string name="right_eye">Measuring right eye</string>
-    <string name="both_eyes">Measuring both eyes</string>
+    <string name="measuring">Measuring %s</string>
+    <string name="left_eye">left eye</string>
+    <string name="right_eye">right eye</string>
+    <string name="both_eyes">both eyes</string>
+    <string name="deleted">Measurement deleted</string>
 </resources>

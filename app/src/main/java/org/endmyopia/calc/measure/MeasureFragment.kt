@@ -77,7 +77,11 @@ class MeasureFragment : Fragment() {
     private fun getEyeModeChangeFn(mode: MeasurementMode, @StringRes resId: Int): (View) -> Unit {
         return {
             dataBinding.holder?.mode?.postValue(mode)
-            Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                resources.getString(R.string.measuring, resources.getString(resId)),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -118,6 +122,7 @@ class MeasureFragment : Fragment() {
     }
 
     private fun deleteMeasurement() {
+        Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
         dataBinding.holder?.hasTakenMeasurement?.postValue(false)
         activity?.let { activity ->
             dataBinding.holder?.let { holder ->

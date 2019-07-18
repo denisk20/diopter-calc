@@ -1,7 +1,9 @@
 package org.endmyopia.calc.measure
 
+import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -9,9 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.endmyopia.calc.R
 import org.endmyopia.calc.data.MeasurementMode
 import java.text.DecimalFormat
 
@@ -20,7 +23,7 @@ import java.text.DecimalFormat
  * @author denisk
  * @since 2019-04-29.
  */
-class MeasureStateHolder : ViewModel() {
+class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
     val EYES_LOW = 76
     val EYES_HIGH = 128
 
@@ -52,6 +55,21 @@ class MeasureStateHolder : ViewModel() {
     }
 
     var lastPersistedMeasurementId = 0L
+
+    fun eyesString(): String {
+        return app.resources.getString(
+            when (mode.value) {
+                MeasurementMode.LEFT -> R.string.left_eye
+                MeasurementMode.RIGHT -> R.string.right_eye
+                MeasurementMode.BOTH -> R.string.both_eyes
+                null -> throw IllegalStateException("no mode?")
+            }
+        )
+    }
+
+    fun isPortrait(): Boolean {
+        return app.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
 
     fun update(distMeters: Double) {
         val diopts = 1 / distMeters
