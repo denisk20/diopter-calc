@@ -1,4 +1,4 @@
-package org.endmyopia.calc
+package org.endmyopia.calc.util
 
 /**
  * @author denisk

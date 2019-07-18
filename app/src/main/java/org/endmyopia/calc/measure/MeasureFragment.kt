@@ -1,4 +1,4 @@
-package org.endmyopia.calc
+package org.endmyopia.calc.measure
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -12,9 +12,12 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_measure.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.endmyopia.calc.R
+import org.endmyopia.calc.data.AppDatabase
+import org.endmyopia.calc.data.Measurement
+import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentMeasureBinding
-import org.endmyopia.calc.db.AppDatabase
-import org.endmyopia.calc.db.Measurement
+import org.endmyopia.calc.util.debug
 
 class MeasureFragment : Fragment() {
 
@@ -51,9 +54,24 @@ class MeasureFragment : Fragment() {
             dataBinding.holder?.hasTakenMeasurement?.postValue(false)
         }
 
-        leftEye.setOnClickListener(getEyeModeChangeFn(MeasurementMode.LEFT, R.string.left_eye))
-        rightEye.setOnClickListener(getEyeModeChangeFn(MeasurementMode.RIGHT, R.string.right_eye))
-        bothEyes.setOnClickListener(getEyeModeChangeFn(MeasurementMode.BOTH, R.string.both_eyes))
+        leftEye.setOnClickListener(
+            getEyeModeChangeFn(
+                MeasurementMode.LEFT,
+                R.string.left_eye
+            )
+        )
+        rightEye.setOnClickListener(
+            getEyeModeChangeFn(
+                MeasurementMode.RIGHT,
+                R.string.right_eye
+            )
+        )
+        bothEyes.setOnClickListener(
+            getEyeModeChangeFn(
+                MeasurementMode.BOTH,
+                R.string.both_eyes
+            )
+        )
     }
 
     private fun getEyeModeChangeFn(mode: MeasurementMode, @StringRes resId: Int): (View) -> Unit {

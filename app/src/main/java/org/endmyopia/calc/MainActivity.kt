@@ -14,6 +14,9 @@ import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import org.endmyopia.calc.measure.MeasureFragment
+import org.endmyopia.calc.progress.ProgressFragment
+import org.endmyopia.calc.settings.SettingsFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 

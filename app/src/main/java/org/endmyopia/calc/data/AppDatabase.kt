@@ -1,4 +1,4 @@
-package org.endmyopia.calc.db
+package org.endmyopia.calc.data
 
 import android.app.Application
 import androidx.room.Database

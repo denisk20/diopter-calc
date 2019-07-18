@@ -1,4 +1,4 @@
-package org.endmyopia.calc
+package org.endmyopia.calc.measure
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -12,6 +12,7 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.endmyopia.calc.data.MeasurementMode
 import java.text.DecimalFormat
 
 
@@ -92,7 +93,10 @@ class MeasureStateHolder : ViewModel() {
         @BindingAdapter("android:layout_marginBottom")
         fun setMarginBottom(view: View, valueDp: Float) {
             val layoutParams: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-            layoutParams.bottomMargin = dpToPx(valueDp, view.context).toInt()
+            layoutParams.bottomMargin = dpToPx(
+                valueDp,
+                view.context
+            ).toInt()
         }
 
         @JvmStatic

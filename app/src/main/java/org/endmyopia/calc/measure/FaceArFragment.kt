@@ -1,4 +1,4 @@
-package org.endmyopia.calc
+package org.endmyopia.calc.measure
 
 import android.os.Bundle
 import android.view.LayoutInflater

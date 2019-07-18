@@ -1,10 +1,11 @@
-package org.endmyopia.calc
+package org.endmyopia.calc.progress
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.endmyopia.calc.R
 
 
 class ProgressFragment : Fragment() {

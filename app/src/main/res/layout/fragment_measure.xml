@@ -4,14 +4,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <variable name="holder" type="org.endmyopia.calc.MeasureStateHolder"/>
+        <variable name="holder" type="org.endmyopia.calc.measure.MeasureStateHolder"/>
         <import type="android.view.View"/>
-        <import type="org.endmyopia.calc.MeasurementMode"/>
+        <import type="org.endmyopia.calc.data.MeasurementMode"/>
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MeasureFragment"
+            tools:context=".measure.MeasureFragment"
             android:background="@color/white"
     >
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
                     android:id="@+id/measure_arView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:name="org.endmyopia.calc.FaceArFragment"
+                    android:name="org.endmyopia.calc.measure.FaceArFragment"
                     app:layout_constraintTop_toBottomOf="@+id/measure_text"
                     app:layout_constraintBottom_toBottomOf="parent"
             />
