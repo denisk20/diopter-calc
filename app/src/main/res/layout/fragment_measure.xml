@@ -97,13 +97,13 @@
                 android:layout_marginBottom="@{holder.hasTakenMeasurement ? 64 : 16}"
         >
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/reTake"
+                    android:id="@+id/delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="32dp"
                     android:visibility="@{holder.hasTakenMeasurement ? View.VISIBLE : View.GONE}"
                     app:backgroundTint="@color/colorPrimaryDark"
-                    app:srcCompat="@drawable/ic_add"
+                    app:srcCompat="@drawable/ic_delete"
             />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="@{holder.distanceMetersVal > 0.01 ? View.VISIBLE : View.GONE}"
                     app:backgroundTint="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/colorAccent}"
-                    app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_refresh : @drawable/ic_camera}"
+                    app:srcCompat="@{holder.hasTakenMeasurement ? @drawable/ic_add : @drawable/ic_camera}"
             />
         </LinearLayout>
 

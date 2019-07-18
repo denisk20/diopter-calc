@@ -45,13 +45,13 @@ class MeasureFragment : Fragment() {
 
         camera.setOnClickListener {
             if (dataBinding.holder?.hasTakenMeasurement?.value!!)
-                reTakeMeasurement()
+                dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             else
                 takeMeasurement()
         }
 
-        reTake.setOnClickListener {
-            dataBinding.holder?.hasTakenMeasurement?.postValue(false)
+        delete.setOnClickListener {
+            deleteMeasurement()
         }
 
         leftEye.setOnClickListener(
@@ -117,7 +117,7 @@ class MeasureFragment : Fragment() {
         }
     }
 
-    private fun reTakeMeasurement() {
+    private fun deleteMeasurement() {
         dataBinding.holder?.hasTakenMeasurement?.postValue(false)
         activity?.let { activity ->
             dataBinding.holder?.let { holder ->
