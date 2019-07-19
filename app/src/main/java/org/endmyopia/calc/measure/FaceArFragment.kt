@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProviders
 import com.google.ar.core.AugmentedFace
@@ -103,22 +104,16 @@ class FaceArFragment : ArFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
-        val hasTakenIt = holder.hasTakenMeasurement.value!!
-        handeTakenMeasurement(hasTakenIt)
-    }
-
     private fun handeTakenMeasurement(hasTakenIt: Boolean) {
         if (hasTakenIt) {
             arSceneView.pause()
             arSceneView.visibility = GONE
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             consequentEmptyFrames = 0;
             arSceneView.resume()
             arSceneView.visibility = VISIBLE
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }
