@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".progress.ProgressFragment">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:orientation="vertical"
+                                                   tools:context=".progress.ProgressFragment">
 
+    <LinearLayout
+            android:id="@+id/filters"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            style="?android:attr/buttonBarStyle"
+    >
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/left_eye"
+        />
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/both_eyes"
+                style="?android:attr/buttonBarButtonStyle"
+        />
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/right_eye"
+                style="?android:attr/buttonBarButtonStyle"
+        />
+    </LinearLayout>
+    <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toTopOf="@+id/filters"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="0dp"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
