@@ -11,7 +11,11 @@ import org.endmyopia.calc.data.MeasurementMode
 class ProgressStateHolder : ViewModel() {
     val selectedModes: MutableLiveData<List<MeasurementMode>> by lazy {
         MutableLiveData<List<MeasurementMode>>(
-            arrayListOf()
+            arrayListOf(
+                MeasurementMode.LEFT,
+                MeasurementMode.BOTH,
+                MeasurementMode.RIGHT
+            )
         )
     }
 

@@ -53,6 +53,7 @@
                 android:layout_width="match_parent"
                 app:layout_constraintBottom_toTopOf="@+id/filters"
                 app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/white"
                 android:layout_height="0dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
