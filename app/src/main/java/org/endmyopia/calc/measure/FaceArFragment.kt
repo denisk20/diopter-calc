@@ -17,6 +17,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import org.endmyopia.calc.util.isEmulator
 import java.util.*
+import kotlin.random.Random
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
 class FaceArFragment : ArFragment() {
@@ -101,7 +102,7 @@ class FaceArFragment : ArFragment() {
                 }
 
                 if (isEmulator()) {
-                    (parentFragment as MeasureFragment).update(0.5)
+                    (parentFragment as MeasureFragment).update(Random.nextDouble(0.1, 1.5))
                 }
                 lastUpdate = now
             }
