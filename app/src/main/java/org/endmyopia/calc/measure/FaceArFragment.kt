@@ -15,6 +15,7 @@ import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
+import org.endmyopia.calc.util.isEmulator
 import java.util.*
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
@@ -99,6 +100,9 @@ class FaceArFragment : ArFragment() {
                     (parentFragment as MeasureFragment).update(distMeters)
                 }
 
+                if (isEmulator()) {
+                    (parentFragment as MeasureFragment).update(0.5)
+                }
                 lastUpdate = now
             }
         }
