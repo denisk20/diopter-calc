@@ -9,7 +9,7 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -35,7 +35,8 @@ class ProgressFragment : Fragment() {
 
         dataBinding = FragmentProgressBinding.bind(view)
         dataBinding.lifecycleOwner = this
-        val holder: ProgressStateHolder = ViewModelProviders.of(activity!!).get(ProgressStateHolder::class.java)
+        val holder: ProgressStateHolder =
+            ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
         dataBinding.holder = holder
 
         addFilterOnClickListener(dataBinding.filterLeft, MeasurementMode.LEFT)

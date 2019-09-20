@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.fragment_measure.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,7 +33,8 @@ class MeasureFragment : Fragment() {
 
         dataBinding = FragmentMeasureBinding.bind(view)
         dataBinding.lifecycleOwner = this
-        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
+        val holder: MeasureStateHolder =
+            ViewModelProvider(activity!!).get(MeasureStateHolder::class.java)
         dataBinding.holder = holder
 
         return view

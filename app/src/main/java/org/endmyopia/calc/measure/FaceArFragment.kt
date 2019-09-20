@@ -8,7 +8,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
@@ -66,7 +66,8 @@ class FaceArFragment : ArFragment() {
         // the face mesh occlusion works correctly.
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
 
-        val holder: MeasureStateHolder = ViewModelProviders.of(activity!!).get(MeasureStateHolder::class.java)
+        val holder: MeasureStateHolder =
+            ViewModelProvider(activity!!).get(MeasureStateHolder::class.java)
 
         holder.hasTakenMeasurement.observe(activity!!, androidx.lifecycle.Observer {
             handeTakenMeasurement(it)
