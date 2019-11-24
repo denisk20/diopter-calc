@@ -27,9 +27,6 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
     val EYES_LOW = 76
     val EYES_HIGH = 128
 
-    private val formatDist = DecimalFormat("#.0 cm")
-    private val formatDiopt = DecimalFormat("-#.00 dpt")
-
     val distanceMetersVal: MutableLiveData<Double> by lazy {
         MutableLiveData<Double>()
     }
@@ -124,5 +121,10 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         }
         private fun dpToPx(dp: Float, context: Context) =
             dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    companion object {
+        val formatDist = DecimalFormat("#.0 cm")
+        val formatDiopt = DecimalFormat("-#.00 dpt")
     }
 }

@@ -99,13 +99,24 @@ class ProgressFragment : Fragment() {
     ) {
         val label = getString(mode.getLabelRes())
         val values = measurements.filter { m -> m.mode == mode }
-            .map { m -> Entry(m.date.toFloat(), m.distanceMeters.toFloat()) }
+            .map { m -> Entry(m.date.toFloat(), m.distanceMeters.toFloat(), m) }
         with(dataBinding) {
             if (chart.data == null) {
                 chart.data = LineData()
+                this@ProgressFragment.context?.let {
+                    val markerView = ProgressMarkerView(
+                        it,
+                        R.layout.progress_popup
+                    )
+                    markerView.chartView = chart
+                    chart.marker = markerView
+                }
+
+
             }
-            if (chart.data.getDataSetByLabel(label, false) != null) {
-                val dataSet = chart.data.getDataSetByLabel(label, false) as LineDataSet
+            val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
+            if (dataSetByLabel != null) {
+                val dataSet = dataSetByLabel as LineDataSet
                 dataSet.values = values
                 dataSet.notifyDataSetChanged()
                 chart.data.notifyDataChanged()
