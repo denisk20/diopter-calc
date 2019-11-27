@@ -20,12 +20,14 @@ import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
+import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.getLabelRes
 
 
 class ProgressFragment : Fragment() {
 
     private lateinit var dataBinding: FragmentProgressBinding
+    private val yAxisShift = -0.1f
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +74,10 @@ class ProgressFragment : Fragment() {
             }
         })
 
+        dataBinding.delete.setOnClickListener {
+            debug("Deleted!")
+        }
+
         return view
     }
 
@@ -111,8 +117,8 @@ class ProgressFragment : Fragment() {
                     markerView.chartView = chart
                     chart.marker = markerView
                 }
-
-
+                chart.axisLeft.axisMinimum = yAxisShift
+                chart.axisRight.axisMinimum = yAxisShift
             }
             val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
             if (dataSetByLabel != null) {

@@ -18,8 +18,4 @@ class ProgressStateHolder : ViewModel() {
             )
         )
     }
-
-    fun filterEnabled(mode: MeasurementMode): Boolean {
-        return selectedModes.value?.contains(mode) == true
-    }
 }
