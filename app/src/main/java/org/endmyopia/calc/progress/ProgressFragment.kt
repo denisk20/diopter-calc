@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.endmyopia.calc.R
@@ -28,6 +31,7 @@ class ProgressFragment : Fragment() {
 
     private lateinit var dataBinding: FragmentProgressBinding
     private val yAxisShift = -0.1f
+    private lateinit var deleteDialogBuilder: AlertDialog.Builder
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +45,8 @@ class ProgressFragment : Fragment() {
             ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
         dataBinding.holder = holder
 
+        deleteDialogBuilder = AlertDialog.Builder(context!!)
+
         addFilterOnClickListener(dataBinding.filterLeft, MeasurementMode.LEFT)
         addFilterOnClickListener(dataBinding.filterBoth, MeasurementMode.BOTH)
         addFilterOnClickListener(dataBinding.filterRight, MeasurementMode.RIGHT)
@@ -50,35 +56,70 @@ class ProgressFragment : Fragment() {
             processFilterButtonChange(it, dataBinding.filterBoth, MeasurementMode.BOTH)
             processFilterButtonChange(it, dataBinding.filterRight, MeasurementMode.RIGHT)
 
-            GlobalScope.launch {
-                val measurements =
-                    AppDatabase.getInstance(context!!.applicationContext as Application).getMeasurementDao()
-                        .getMeasurements(it)
-
-                with(it) {
-                    if (contains(MeasurementMode.RIGHT)) createDataSet(
-                        measurements,
-                        MeasurementMode.RIGHT
-                    ) else removeDataSet(MeasurementMode.RIGHT)
-                    if (contains(MeasurementMode.BOTH)) createDataSet(
-                        measurements,
-                        MeasurementMode.BOTH
-                    ) else removeDataSet(MeasurementMode.BOTH)
-                    if (contains(MeasurementMode.LEFT)) createDataSet(
-                        measurements,
-                        MeasurementMode.LEFT
-                    ) else removeDataSet(MeasurementMode.LEFT)
-                }
-
-                dataBinding.chart.invalidate()
-            }
+            fillData(it)
         })
 
         dataBinding.delete.setOnClickListener {
-            debug("Deleted!")
+            deleteDialogBuilder
+                .setTitle(
+                    getString(
+                        R.string.delete_measurement,
+                        dataBinding.holder?.selectedValue?.value?.distanceMeters.toString()
+                    )
+                )
+                .setPositiveButton(
+                    R.string.yes
+                ) { dialogInterface, i ->
+                    dataBinding.holder?.selectedValue?.value?.let { measurement ->
+                        GlobalScope.launch {
+                            AppDatabase.getInstance(context!!.applicationContext as Application)
+                                .getMeasurementDao().deleteById(measurement.id)
+                            val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
+                                getString(measurement.mode.getLabelRes()),
+                                false
+                            )
+                            if (dataSetByLabel is LineDataSet) {
+                                debug("removed? -- ${dataSetByLabel.removeEntryByXValue(measurement.date.toFloat())}")
+                                dataSetByLabel.notifyDataSetChanged()
+                                dataBinding.chart.data.notifyDataChanged()
+                                dataBinding.chart.notifyDataSetChanged()
+                            }
+                        }
+                    }
+
+                }
+                .setNegativeButton(R.string.no, null)
+                .create().show()
         }
 
         return view
+    }
+
+    private fun fillData(modes: List<MeasurementMode>) {
+        GlobalScope.launch {
+            val measurements =
+                AppDatabase.getInstance(context!!.applicationContext as Application)
+                    .getMeasurementDao()
+                    .getMeasurements(modes)
+            debug(measurements.toString())
+
+            with(modes) {
+                if (contains(MeasurementMode.RIGHT)) createDataSet(
+                    measurements,
+                    MeasurementMode.RIGHT
+                ) else removeDataSet(MeasurementMode.RIGHT)
+                if (contains(MeasurementMode.BOTH)) createDataSet(
+                    measurements,
+                    MeasurementMode.BOTH
+                ) else removeDataSet(MeasurementMode.BOTH)
+                if (contains(MeasurementMode.LEFT)) createDataSet(
+                    measurements,
+                    MeasurementMode.LEFT
+                ) else removeDataSet(MeasurementMode.LEFT)
+            }
+
+            dataBinding.chart.invalidate()
+        }
     }
 
     private fun removeDataSet(
@@ -119,12 +160,20 @@ class ProgressFragment : Fragment() {
                 }
                 chart.axisLeft.axisMinimum = yAxisShift
                 chart.axisRight.axisMinimum = yAxisShift
+                chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                    override fun onNothingSelected() {
+                        holder?.selectedValue?.postValue(null)
+                    }
+
+                    override fun onValueSelected(e: Entry?, h: Highlight?) {
+                        holder?.selectedValue?.postValue(e?.data as Measurement?)
+                    }
+                })
             }
             val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
-            if (dataSetByLabel != null) {
-                val dataSet = dataSetByLabel as LineDataSet
-                dataSet.values = values
-                dataSet.notifyDataSetChanged()
+            if (dataSetByLabel is LineDataSet) {
+                dataSetByLabel.values = values
+                dataSetByLabel.notifyDataSetChanged()
                 chart.data.notifyDataChanged()
                 chart.notifyDataSetChanged()
             } else {

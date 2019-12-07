@@ -2,6 +2,7 @@ package org.endmyopia.calc.progress
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 
 /**
@@ -17,5 +18,8 @@ class ProgressStateHolder : ViewModel() {
                 MeasurementMode.RIGHT
             )
         )
+    }
+    val selectedValue: MutableLiveData<Measurement> by lazy {
+        MutableLiveData<Measurement>()
     }
 }
