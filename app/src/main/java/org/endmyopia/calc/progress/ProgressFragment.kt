@@ -178,6 +178,7 @@ class ProgressFragment : Fragment() {
                 chart.notifyDataSetChanged()
             } else {
                 val dataSet = LineDataSet(values, label)
+                dataSet.circleRadius = 10f
 
                 chart.data.addDataSet(dataSet)
                 chart.data.notifyDataChanged()
