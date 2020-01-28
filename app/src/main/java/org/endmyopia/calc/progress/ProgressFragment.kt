@@ -202,8 +202,8 @@ class ProgressFragment : Fragment() {
 
     private fun addFilterOnClickListener(button: Button, mode: MeasurementMode) {
         button.setOnClickListener {
-            val result: ArrayList<MeasurementMode> = ArrayList(
-                dataBinding.holder?.selectedModes?.value
+            val result: ArrayList<MeasurementMode> = ArrayList<MeasurementMode>(
+                dataBinding.holder?.selectedModes?.value ?: ArrayList<MeasurementMode>()
             )
 
             if (result.contains(mode)) {
