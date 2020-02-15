@@ -45,6 +45,18 @@ class ProgressFragment : Fragment() {
             ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
         dataBinding.holder = holder
 
+        dataBinding.chart.axisLeft.axisMinimum = yAxisShift
+        dataBinding.chart.axisRight.axisMinimum = yAxisShift
+        dataBinding.chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+                holder.selectedValue.postValue(null)
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                holder.selectedValue.postValue(e?.data as Measurement?)
+            }
+        })
+
         deleteDialogBuilder = AlertDialog.Builder(context!!)
 
         addFilterOnClickListener(dataBinding.filterLeft, MeasurementMode.LEFT)
@@ -108,10 +120,12 @@ class ProgressFragment : Fragment() {
                     measurements,
                     MeasurementMode.RIGHT
                 ) else removeDataSet(MeasurementMode.RIGHT)
+
                 if (contains(MeasurementMode.BOTH)) createDataSet(
                     measurements,
                     MeasurementMode.BOTH
                 ) else removeDataSet(MeasurementMode.BOTH)
+
                 if (contains(MeasurementMode.LEFT)) createDataSet(
                     measurements,
                     MeasurementMode.LEFT
@@ -158,17 +172,6 @@ class ProgressFragment : Fragment() {
                     markerView.chartView = chart
                     chart.marker = markerView
                 }
-                chart.axisLeft.axisMinimum = yAxisShift
-                chart.axisRight.axisMinimum = yAxisShift
-                chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                    override fun onNothingSelected() {
-                        holder?.selectedValue?.postValue(null)
-                    }
-
-                    override fun onValueSelected(e: Entry?, h: Highlight?) {
-                        holder?.selectedValue?.postValue(e?.data as Measurement?)
-                    }
-                })
             }
             val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
             if (dataSetByLabel is LineDataSet) {
