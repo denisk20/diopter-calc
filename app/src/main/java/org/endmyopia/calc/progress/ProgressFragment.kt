@@ -45,8 +45,8 @@ class ProgressFragment : Fragment() {
             ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
         dataBinding.holder = holder
 
-        dataBinding.chart.axisLeft.axisMinimum = yAxisShift
-        dataBinding.chart.axisRight.axisMinimum = yAxisShift
+        //dataBinding.chart.axisLeft.axisMinimum = yAxisShift
+        //dataBinding.chart.axisRight.axisMinimum = yAxisShift
         dataBinding.chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onNothingSelected() {
                 holder.selectedValue.postValue(null)
@@ -84,7 +84,7 @@ class ProgressFragment : Fragment() {
                 ) { dialogInterface, i ->
                     dataBinding.holder?.selectedValue?.value?.let { measurement ->
                         GlobalScope.launch {
-                            AppDatabase.getInstance(context!!.applicationContext as Application)
+                            AppDatabase.getInstance(context!!.applicationConte as Application)
                                 .getMeasurementDao().deleteById(measurement.id)
                             val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
                                 getString(measurement.mode.getLabelRes()),
@@ -95,6 +95,7 @@ class ProgressFragment : Fragment() {
                                 dataSetByLabel.notifyDataSetChanged()
                                 dataBinding.chart.data.notifyDataChanged()
                                 dataBinding.chart.notifyDataSetChanged()
+                                dataBinding.chart.invalidate()
                             }
                         }
                     }
@@ -159,8 +160,36 @@ class ProgressFragment : Fragment() {
         mode: MeasurementMode
     ) {
         val label = getString(mode.getLabelRes())
-        val values = measurements.filter { m -> m.mode == mode }
-            .map { m -> Entry(m.date.toFloat(), m.distanceMeters.toFloat(), m) }
+//        val values = listOf(
+//            Entry(Date(1582520774860).time.toFloat(), 0.62f),
+//            Entry(Date(1582520775860).time.toFloat(), 0.63f),
+//            Entry(Date(1582520778860).time.toFloat(), 0.60f)
+//        )
+        val fakeMeasurements = listOf<Measurement>(
+            Measurement(1, MeasurementMode.BOTH, 1582520776860, 0.0),
+            Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.61),
+            Measurement(1, MeasurementMode.BOTH, 1582520779860, 0.63),
+            Measurement(1, MeasurementMode.BOTH, 1582520796860, 0.60),
+            Measurement(1, MeasurementMode.BOTH, 1582520874860, 0.65)
+        )
+        val filtered = fakeMeasurements.filter { m -> m.mode == mode }
+        lateinit var values: List<Entry>
+
+        if (filtered.isNotEmpty()) {
+            val minTimestamp =
+                filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
+                    .date
+            values = filtered
+                .map { m ->
+                    Entry(
+                        (m.date - minTimestamp).toFloat(),
+                        m.distanceMeters.toFloat(),
+                        m
+                    )
+                }
+        } else {
+            values = emptyList()
+        }
         with(dataBinding) {
             if (chart.data == null) {
                 chart.data = LineData()
