@@ -92,11 +92,26 @@ class ProgressFragment : Fragment() {
                                 false
                             )
                             if (dataSetByLabel is LineDataSet) {
-                                debug("removed? -- ${dataSetByLabel.removeEntryByXValue(measurement.date.toFloat())}")
-                                dataSetByLabel.notifyDataSetChanged()
-                                dataBinding.chart.data.notifyDataChanged()
-                                dataBinding.chart.notifyDataSetChanged()
-                                dataBinding.chart.invalidate()
+                                dataBinding.chart.highlightValues(null)
+                                var index = -1
+                                for (i in 0 until dataSetByLabel.entryCount) {
+                                    debug("$i : ${dataSetByLabel.getEntryForIndex(i).data}")
+                                    if ((dataSetByLabel.getEntryForIndex(i).data as Measurement).id == measurement.id) {
+                                        index = i
+                                        break
+                                    }
+                                }
+                                if (index > -1) {
+                                    debug(
+                                        "removed ${measurement.distanceMeters}? -- ${dataSetByLabel.removeEntry(
+                                            index
+                                        )}"
+                                    )
+                                    dataSetByLabel.notifyDataSetChanged()
+                                    dataBinding.chart.data.notifyDataChanged()
+                                    dataBinding.chart.notifyDataSetChanged()
+                                }
+
                             }
                         }
                     }
@@ -168,10 +183,10 @@ class ProgressFragment : Fragment() {
 //        )
         val fakeMeasurements = listOf<Measurement>(
             Measurement(1, MeasurementMode.BOTH, 1582520776860, 0.0),
-            Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.61),
-            Measurement(1, MeasurementMode.BOTH, 1582520779860, 0.63),
-            Measurement(1, MeasurementMode.BOTH, 1582520796860, 0.60),
-            Measurement(1, MeasurementMode.BOTH, 1582520874860, 0.65)
+            Measurement(2, MeasurementMode.BOTH, 1582520777860, 0.61),
+            Measurement(3, MeasurementMode.BOTH, 1582520779860, 0.63),
+            Measurement(4, MeasurementMode.BOTH, 1582520796860, 0.60),
+            Measurement(5, MeasurementMode.BOTH, 1582520874860, 0.65)
         )
         val filtered = fakeMeasurements.filter { m -> m.mode == mode }
         lateinit var values: List<Entry>
