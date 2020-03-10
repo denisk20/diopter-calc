@@ -63,7 +63,7 @@ class ProgressFragment : Fragment() {
         addFilterOnClickListener(dataBinding.filterBoth, MeasurementMode.BOTH)
         addFilterOnClickListener(dataBinding.filterRight, MeasurementMode.RIGHT)
 
-        holder.selectedModes.observe(this, Observer {
+        holder.selectedModes.observe(viewLifecycleOwner, Observer {
             processFilterButtonChange(it, dataBinding.filterLeft, MeasurementMode.LEFT)
             processFilterButtonChange(it, dataBinding.filterBoth, MeasurementMode.BOTH)
             processFilterButtonChange(it, dataBinding.filterRight, MeasurementMode.RIGHT)
@@ -84,7 +84,8 @@ class ProgressFragment : Fragment() {
                 ) { dialogInterface, i ->
                     dataBinding.holder?.selectedValue?.value?.let { measurement ->
                         GlobalScope.launch {
-                            AppDatabase.getInstance(context!!.applicationConte as Application)
+                            dataBinding.holder?.selectedValue?.postValue(null)
+                            AppDatabase.getInstance(context!!.applicationContext as Application)
                                 .getMeasurementDao().deleteById(measurement.id)
                             val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
                                 getString(measurement.mode.getLabelRes()),
@@ -110,6 +111,8 @@ class ProgressFragment : Fragment() {
 
     private fun fillData(modes: List<MeasurementMode>) {
         GlobalScope.launch {
+            dataBinding.holder?.selectedValue?.postValue(null)
+            dataBinding.chart.highlightValues(null)
             val measurements =
                 AppDatabase.getInstance(context!!.applicationContext as Application)
                     .getMeasurementDao()
@@ -132,8 +135,6 @@ class ProgressFragment : Fragment() {
                     MeasurementMode.LEFT
                 ) else removeDataSet(MeasurementMode.LEFT)
             }
-
-            dataBinding.chart.invalidate()
         }
     }
 
