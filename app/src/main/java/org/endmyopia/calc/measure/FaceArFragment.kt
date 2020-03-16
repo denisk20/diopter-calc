@@ -1,5 +1,6 @@
 package org.endmyopia.calc.measure
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +10,22 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
+import org.endmyopia.calc.settings.Settings
 import org.endmyopia.calc.util.isEmulator
 import java.util.*
 import kotlin.random.Random
 
 /** Implements ArFragment and configures the session for using the augmented faces feature.  */
-class FaceArFragment : ArFragment() {
+class FaceArFragment() : ArFragment() {
+
+    private lateinit var settings: Settings
 
     private var lastUpdate = -1L
 
@@ -29,6 +34,11 @@ class FaceArFragment : ArFragment() {
     private val CONSEQUENT_FRAMES_COUNT_LIMIT = 3
 
     private val UPDATE_INTERVAL = 500L //ms
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        settings = Settings(PreferenceManager.getDefaultSharedPreferences(requireContext()))
+    }
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
@@ -87,7 +97,7 @@ class FaceArFragment : ArFragment() {
                     faceFound = true
                 } else {
                     consequentEmptyFrames++
-                    if (faceFound && consequentEmptyFrames >= CONSEQUENT_FRAMES_COUNT_LIMIT) {
+                    if (settings.measureWithGesture && faceFound && consequentEmptyFrames >= CONSEQUENT_FRAMES_COUNT_LIMIT) {
                         faceFound = false;
                         consequentEmptyFrames = 0
                         (parentFragment as MeasureFragment).takeMeasurement()
