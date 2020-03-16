@@ -47,6 +47,10 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         MutableLiveData<Boolean>(false)
     }
 
+    val focusStyle: MutableLiveData<FocusStyle> by lazy {
+        MutableLiveData<FocusStyle>(FocusStyle.White)
+    }
+
     val mode: MutableLiveData<MeasurementMode> by lazy {
         MutableLiveData<MeasurementMode>(MeasurementMode.BOTH)
     }
@@ -78,6 +82,14 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         dioptersStr.postValue(formatDiopt.format(diopts))
     }
 
+    fun toggleStyle() {
+        val newFocusStyle = FocusStyle.values().getOrElse((focusStyle.value?.ordinal ?: 0) + 1) {
+            FocusStyle.White
+        }
+
+        focusStyle.postValue(newFocusStyle)
+    }
+
     object CommonBindingUtil {
         @JvmStatic
         @BindingAdapter("backgroundTint")
@@ -100,14 +112,16 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         @JvmStatic
         @BindingAdapter("android:layout_marginTop")
         fun setMarginTop(view: View, value: Float) {
-            val layoutParams: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+            val layoutParams: ViewGroup.MarginLayoutParams =
+                view.layoutParams as ViewGroup.MarginLayoutParams
             layoutParams.topMargin = value.toInt()
         }
 
         @JvmStatic
         @BindingAdapter("android:layout_marginBottom")
         fun setMarginBottom(view: View, valueDp: Float) {
-            val layoutParams: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+            val layoutParams: ViewGroup.MarginLayoutParams =
+                view.layoutParams as ViewGroup.MarginLayoutParams
             layoutParams.bottomMargin = dpToPx(
                 valueDp,
                 view.context
@@ -119,6 +133,7 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         fun fabEnabled(view: FloatingActionButton, enabled: Boolean) {
             view.isEnabled = enabled
         }
+
         private fun dpToPx(dp: Float, context: Context) =
             dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }

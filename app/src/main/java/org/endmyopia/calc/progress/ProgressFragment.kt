@@ -181,14 +181,14 @@ class ProgressFragment : Fragment() {
 //            Entry(Date(1582520775860).time.toFloat(), 0.63f),
 //            Entry(Date(1582520778860).time.toFloat(), 0.60f)
 //        )
-        val fakeMeasurements = listOf<Measurement>(
-            Measurement(1, MeasurementMode.BOTH, 1582520776860, 0.0),
-            Measurement(2, MeasurementMode.BOTH, 1582520777860, 0.61),
-            Measurement(3, MeasurementMode.BOTH, 1582520779860, 0.63),
-            Measurement(4, MeasurementMode.BOTH, 1582520796860, 0.60),
-            Measurement(5, MeasurementMode.BOTH, 1582520874860, 0.65)
-        )
-        val filtered = fakeMeasurements.filter { m -> m.mode == mode }
+//        val fakeMeasurements = listOf<Measurement>(
+//            Measurement(1, MeasurementMode.BOTH, 1582520776860, 0.0),
+//            Measurement(2, MeasurementMode.BOTH, 1582520777860, 0.61),
+//            Measurement(3, MeasurementMode.BOTH, 1582520779860, 0.63),
+//            Measurement(4, MeasurementMode.BOTH, 1582520796860, 0.60),
+//            Measurement(5, MeasurementMode.BOTH, 1582520874860, 0.65)
+//        )
+        val filtered = measurements.filter { m -> m.mode == mode }
         lateinit var values: List<Entry>
 
         if (filtered.isNotEmpty()) {
