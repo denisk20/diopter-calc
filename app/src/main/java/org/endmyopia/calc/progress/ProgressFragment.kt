@@ -88,8 +88,6 @@ class ProgressFragment : Fragment() {
             fillData(it)
         })
         holder.minTimestamp.observe(viewLifecycleOwner, Observer {
-            dataBinding.chart.notifyDataSetChanged()
-            dataBinding.chart.notifyDataSetChanged()
             dataBinding.chart.invalidate()
         })
 
@@ -169,6 +167,8 @@ class ProgressFragment : Fragment() {
                     measurements,
                     MeasurementMode.LEFT
                 ) else removeDataSet(MeasurementMode.LEFT)
+
+                dataBinding.chart.invalidate()
             }
         }
     }
@@ -185,7 +185,6 @@ class ProgressFragment : Fragment() {
             val dataSet = chart.data.getDataSetByLabel(label, false)
             if (dataSet != null) {
                 chart.data.removeDataSet(dataSet)
-                chart.data.notifyDataChanged()
                 chart.notifyDataSetChanged()
             }
         }
@@ -243,17 +242,14 @@ class ProgressFragment : Fragment() {
             val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
             if (dataSetByLabel is LineDataSet) {
                 dataSetByLabel.values = values
-                dataSetByLabel.notifyDataSetChanged()
-                chart.data.notifyDataChanged()
-                chart.notifyDataSetChanged()
             } else {
                 val dataSet = LineDataSet(values, label)
                 dataSet.circleRadius = 10f
 
                 chart.data.addDataSet(dataSet)
                 chart.data.notifyDataChanged()
-                chart.notifyDataSetChanged()
             }
+            chart.notifyDataSetChanged()
         }
     }
 
