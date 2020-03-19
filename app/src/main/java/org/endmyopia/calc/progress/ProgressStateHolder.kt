@@ -22,4 +22,8 @@ class ProgressStateHolder : ViewModel() {
     val selectedValue: MutableLiveData<Measurement> by lazy {
         MutableLiveData<Measurement>()
     }
+
+    val minTimestamp: MutableLiveData<Long> by lazy {
+        MutableLiveData(0L)
+    }
 }

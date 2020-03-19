@@ -11,9 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.coroutines.GlobalScope
@@ -25,12 +27,14 @@ import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
 import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.getLabelRes
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ProgressFragment : Fragment() {
 
     private lateinit var dataBinding: FragmentProgressBinding
-    private val yAxisShift = -0.1f
     private lateinit var deleteDialogBuilder: AlertDialog.Builder
 
     override fun onCreateView(
@@ -56,6 +60,19 @@ class ProgressFragment : Fragment() {
                 holder.selectedValue.postValue(e?.data as Measurement?)
             }
         })
+        dataBinding.chart.xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE)
+        dataBinding.chart.xAxis.valueFormatter = object : ValueFormatter() {
+            val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
+            override fun getFormattedValue(
+                value: Float
+            ): String {
+                ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
+                    .minTimestamp.value?.let {
+                    return dateFormat.format(Date(it + value.toLong()))
+                }
+                return "n/a"
+            }
+        }
 
         deleteDialogBuilder = AlertDialog.Builder(context!!)
 
@@ -111,7 +128,6 @@ class ProgressFragment : Fragment() {
                                     dataBinding.chart.data.notifyDataChanged()
                                     dataBinding.chart.notifyDataSetChanged()
                                 }
-
                             }
                         }
                     }
@@ -195,6 +211,8 @@ class ProgressFragment : Fragment() {
             val minTimestamp =
                 filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
                     .date
+            ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
+                .minTimestamp.postValue(minTimestamp)
             values = filtered
                 .map { m ->
                     Entry(
