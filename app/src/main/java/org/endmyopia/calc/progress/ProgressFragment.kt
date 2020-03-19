@@ -60,7 +60,7 @@ class ProgressFragment : Fragment() {
                 holder.selectedValue.postValue(e?.data as Measurement?)
             }
         })
-        dataBinding.chart.xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE)
+        dataBinding.chart.xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
         dataBinding.chart.xAxis.valueFormatter = object : ValueFormatter() {
             val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
             override fun getFormattedValue(
@@ -86,6 +86,11 @@ class ProgressFragment : Fragment() {
             processFilterButtonChange(it, dataBinding.filterRight, MeasurementMode.RIGHT)
 
             fillData(it)
+        })
+        holder.minTimestamp.observe(viewLifecycleOwner, Observer {
+            dataBinding.chart.notifyDataSetChanged()
+            dataBinding.chart.notifyDataSetChanged()
+            dataBinding.chart.invalidate()
         })
 
         dataBinding.delete.setOnClickListener {
@@ -148,7 +153,6 @@ class ProgressFragment : Fragment() {
                 AppDatabase.getInstance(context!!.applicationContext as Application)
                     .getMeasurementDao()
                     .getMeasurements(modes)
-            debug(measurements.toString())
 
             with(modes) {
                 if (contains(MeasurementMode.RIGHT)) createDataSet(
