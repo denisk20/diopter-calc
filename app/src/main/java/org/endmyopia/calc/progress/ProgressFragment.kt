@@ -47,113 +47,125 @@ class ProgressFragment : Fragment() {
 
         dataBinding = FragmentProgressBinding.bind(view)
         dataBinding.lifecycleOwner = this
-        val holder: ProgressStateHolder =
-            ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
-        dataBinding.holder = holder
+        with(dataBinding) {
 
-        //dataBinding.chart.axisLeft.axisMinimum = yAxisShift
-        //dataBinding.chart.axisRight.axisMinimum = yAxisShift
-        dataBinding.chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onNothingSelected() {
-                holder.selectedValue.postValue(null)
-            }
-
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                holder.selectedValue.postValue(e?.data as Measurement?)
-            }
-        })
-        dataBinding.chart.xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
-        dataBinding.chart.xAxis.granularity = 1000 * 60f // ms
-        dataBinding.chart.description.text = ""
-
-        val yValueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(
-                value: Float
-            ): String {
-                return MeasureStateHolder.formatDiopt.format(value)
-            }
-        }
-        dataBinding.chart.axisLeft.valueFormatter = yValueFormatter
-        dataBinding.chart.axisRight.valueFormatter = yValueFormatter
-
-        dataBinding.chart.xAxis.valueFormatter = object : ValueFormatter() {
-            val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
-            override fun getFormattedValue(
-                value: Float
-            ): String {
+            val holder: ProgressStateHolder =
                 ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
-                    .minTimestamp.value?.let {
-                    return dateFormat.format(Date(it + value.toLong()))
+
+            //chart.axisLeft.axisMinimum = yAxisShift
+            //chart.axisRight.axisMinimum = yAxisShift
+            with(chart) {
+                setOnChartValueSelectedListener(object :
+                    OnChartValueSelectedListener {
+                    override fun onNothingSelected() {
+                        holder.selectedValue.postValue(null)
+                    }
+
+                    override fun onValueSelected(e: Entry?, h: Highlight?) {
+                        holder.selectedValue.postValue(e?.data as Measurement?)
+                    }
+                })
+                xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
+                xAxis.granularity = 1000 * 60f // ms
+                description.text = ""
+
+                val yValueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(
+                        value: Float
+                    ): String {
+                        return MeasureStateHolder.formatDiopt.format(value)
+                    }
                 }
-                return "n/a"
+                axisLeft.valueFormatter = yValueFormatter
+                axisRight.valueFormatter = yValueFormatter
+
+                val spaceTop = 20f
+                axisLeft.spaceTop = spaceTop
+                axisRight.spaceTop = spaceTop
+
+                axisLeft.setDrawTopYLabelEntry(false)
+                axisRight.setDrawTopYLabelEntry(false)
+
+                xAxis.valueFormatter = object : ValueFormatter() {
+                    val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
+                    override fun getFormattedValue(
+                        value: Float
+                    ): String {
+                        ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
+                            .minTimestamp.value?.let {
+                            return dateFormat.format(Date(it + value.toLong()))
+                        }
+                        return "n/a"
+                    }
+                }
+
             }
-        }
+            deleteDialogBuilder = AlertDialog.Builder(context!!)
 
-        deleteDialogBuilder = AlertDialog.Builder(context!!)
+            addFilterOnClickListener(filterLeft, MeasurementMode.LEFT)
+            addFilterOnClickListener(filterBoth, MeasurementMode.BOTH)
+            addFilterOnClickListener(filterRight, MeasurementMode.RIGHT)
 
-        addFilterOnClickListener(dataBinding.filterLeft, MeasurementMode.LEFT)
-        addFilterOnClickListener(dataBinding.filterBoth, MeasurementMode.BOTH)
-        addFilterOnClickListener(dataBinding.filterRight, MeasurementMode.RIGHT)
+            holder.selectedModes.observe(viewLifecycleOwner, Observer {
+                processFilterButtonChange(it, filterLeft, MeasurementMode.LEFT)
+                processFilterButtonChange(it, filterBoth, MeasurementMode.BOTH)
+                processFilterButtonChange(it, filterRight, MeasurementMode.RIGHT)
 
-        holder.selectedModes.observe(viewLifecycleOwner, Observer {
-            processFilterButtonChange(it, dataBinding.filterLeft, MeasurementMode.LEFT)
-            processFilterButtonChange(it, dataBinding.filterBoth, MeasurementMode.BOTH)
-            processFilterButtonChange(it, dataBinding.filterRight, MeasurementMode.RIGHT)
+                fillData(it)
+            })
+            holder.minTimestamp.observe(viewLifecycleOwner, Observer {
+                chart.invalidate()
+            })
 
-            fillData(it)
-        })
-        holder.minTimestamp.observe(viewLifecycleOwner, Observer {
-            dataBinding.chart.invalidate()
-        })
-
-        dataBinding.delete.setOnClickListener {
-            dataBinding.holder?.selectedValue?.value?.distanceMeters?.let {
-                deleteDialogBuilder
-                    .setTitle(
-                        getString(
-                            R.string.delete_measurement,
-                            MeasureStateHolder.formatDiopt.format(it)
+            delete.setOnClickListener {
+                holder.selectedValue.value?.distanceMeters?.let {
+                    deleteDialogBuilder
+                        .setTitle(
+                            getString(
+                                R.string.delete_measurement,
+                                MeasureStateHolder.formatDiopt.format(it)
+                            )
                         )
-                    )
-                    .setPositiveButton(
-                        R.string.yes
-                    ) { dialogInterface, i ->
-                        dataBinding.holder?.selectedValue?.value?.let { measurement ->
-                            GlobalScope.launch {
-                                dataBinding.holder?.selectedValue?.postValue(null)
-                                AppDatabase.getInstance(context!!.applicationContext as Application)
-                                    .getMeasurementDao().deleteById(measurement.id)
-                                val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
-                                    getString(measurement.mode.getLabelRes()),
-                                    false
-                                )
-                                if (dataSetByLabel is LineDataSet) {
-                                    dataBinding.chart.highlightValues(null)
-                                    var index = -1
-                                    for (i in 0 until dataSetByLabel.entryCount) {
-                                        debug("$i : ${dataSetByLabel.getEntryForIndex(i).data}")
-                                        if ((dataSetByLabel.getEntryForIndex(i).data as Measurement).id == measurement.id) {
-                                            index = i
-                                            break
+                        .setPositiveButton(
+                            R.string.yes
+                        ) { dialogInterface, i ->
+                            holder.selectedValue.value?.let { measurement ->
+                                GlobalScope.launch {
+                                    holder.selectedValue?.postValue(null)
+                                    AppDatabase.getInstance(context!!.applicationContext as Application)
+                                        .getMeasurementDao().deleteById(measurement.id)
+                                    val dataSetByLabel = chart.data.getDataSetByLabel(
+                                        getString(measurement.mode.getLabelRes()),
+                                        false
+                                    )
+                                    if (dataSetByLabel is LineDataSet) {
+                                        chart.highlightValues(null)
+                                        var index = -1
+                                        for (i in 0 until dataSetByLabel.entryCount) {
+                                            debug("$i : ${dataSetByLabel.getEntryForIndex(i).data}")
+                                            if ((dataSetByLabel.getEntryForIndex(i).data as Measurement).id == measurement.id) {
+                                                index = i
+                                                break
+                                            }
                                         }
-                                    }
-                                    if (index > -1) {
-                                        debug(
-                                            "removed ${measurement.distanceMeters}? -- ${dataSetByLabel.removeEntry(
-                                                index
-                                            )}"
-                                        )
-                                        dataSetByLabel.notifyDataSetChanged()
-                                        dataBinding.chart.data.notifyDataChanged()
-                                        dataBinding.chart.notifyDataSetChanged()
+                                        if (index > -1) {
+                                            debug(
+                                                "removed ${measurement.distanceMeters}? -- ${dataSetByLabel.removeEntry(
+                                                    index
+                                                )}"
+                                            )
+                                            dataSetByLabel.notifyDataSetChanged()
+                                            chart.data.notifyDataChanged()
+                                            chart.notifyDataSetChanged()
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                    }
-                    .setNegativeButton(R.string.no, null)
-                    .create().show()
+                        }
+                        .setNegativeButton(R.string.no, null)
+                        .create().show()
+                }
             }
         }
 
