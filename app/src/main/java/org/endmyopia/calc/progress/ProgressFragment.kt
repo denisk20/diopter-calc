@@ -1,6 +1,7 @@
 package org.endmyopia.calc.progress
 
 import android.app.Application
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +29,6 @@ import org.endmyopia.calc.databinding.FragmentProgressBinding
 import org.endmyopia.calc.measure.MeasureStateHolder
 import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.getLabelRes
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ProgressFragment : Fragment() {
@@ -62,18 +60,18 @@ class ProgressFragment : Fragment() {
             }
         })
         dataBinding.chart.xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
-        dataBinding.chart.xAxis.valueFormatter = object : ValueFormatter() {
-            val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
+        dataBinding.chart.xAxis.granularity = 1000 * 60f // ms
+        dataBinding.chart.description.text = ""
+
+        val yValueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(
                 value: Float
             ): String {
-                ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
-                    .minTimestamp.value?.let {
-                    return dateFormat.format(Date(it + value.toLong()))
-                }
-                return "n/a"
+                return MeasureStateHolder.formatDiopt.format(value)
             }
         }
+        dataBinding.chart.axisLeft.valueFormatter = yValueFormatter
+        dataBinding.chart.axisRight.valueFormatter = yValueFormatter
 
         deleteDialogBuilder = AlertDialog.Builder(context!!)
 
@@ -247,7 +245,14 @@ class ProgressFragment : Fragment() {
                 dataSetByLabel.values = values
             } else {
                 val dataSet = LineDataSet(values, label)
-                dataSet.circleRadius = 10f
+                dataSet.lineWidth = 3f
+                dataSet.color = when (mode) {
+                    MeasurementMode.LEFT -> Color.BLUE
+                    MeasurementMode.RIGHT -> Color.RED
+                    MeasurementMode.BOTH -> Color.GREEN
+                }
+                dataSet.circleRadius = 5f
+                dataSet.setCircleColor(dataSet.color)
 
                 chart.data.addDataSet(dataSet)
                 chart.data.notifyDataChanged()
