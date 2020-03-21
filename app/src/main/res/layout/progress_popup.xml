@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="15dp"
         android:orientation="vertical">
 
     <TextView
             android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ProgressMarkerLabel"
+            tools:text="2020-03-21" />
 
     <TextView
             android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ProgressMarkerLabel"
+            tools:text="15:33" />
 
     <TextView
             android:id="@+id/eyes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ProgressMarkerLabel"
+            tools:text="Both eies" />
 
     <TextView
             android:id="@+id/value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ProgressMarkerLabel"
+            tools:text="-0.61dp" />
 
 </LinearLayout>

@@ -25,6 +25,7 @@ import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
+import org.endmyopia.calc.measure.MeasureStateHolder
 import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.getLabelRes
 import java.text.SimpleDateFormat
@@ -92,52 +93,54 @@ class ProgressFragment : Fragment() {
         })
 
         dataBinding.delete.setOnClickListener {
-            deleteDialogBuilder
-                .setTitle(
-                    getString(
-                        R.string.delete_measurement,
-                        dataBinding.holder?.selectedValue?.value?.distanceMeters.toString()
+            dataBinding.holder?.selectedValue?.value?.distanceMeters?.let {
+                deleteDialogBuilder
+                    .setTitle(
+                        getString(
+                            R.string.delete_measurement,
+                            MeasureStateHolder.formatDiopt.format(it)
+                        )
                     )
-                )
-                .setPositiveButton(
-                    R.string.yes
-                ) { dialogInterface, i ->
-                    dataBinding.holder?.selectedValue?.value?.let { measurement ->
-                        GlobalScope.launch {
-                            dataBinding.holder?.selectedValue?.postValue(null)
-                            AppDatabase.getInstance(context!!.applicationContext as Application)
-                                .getMeasurementDao().deleteById(measurement.id)
-                            val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
-                                getString(measurement.mode.getLabelRes()),
-                                false
-                            )
-                            if (dataSetByLabel is LineDataSet) {
-                                dataBinding.chart.highlightValues(null)
-                                var index = -1
-                                for (i in 0 until dataSetByLabel.entryCount) {
-                                    debug("$i : ${dataSetByLabel.getEntryForIndex(i).data}")
-                                    if ((dataSetByLabel.getEntryForIndex(i).data as Measurement).id == measurement.id) {
-                                        index = i
-                                        break
+                    .setPositiveButton(
+                        R.string.yes
+                    ) { dialogInterface, i ->
+                        dataBinding.holder?.selectedValue?.value?.let { measurement ->
+                            GlobalScope.launch {
+                                dataBinding.holder?.selectedValue?.postValue(null)
+                                AppDatabase.getInstance(context!!.applicationContext as Application)
+                                    .getMeasurementDao().deleteById(measurement.id)
+                                val dataSetByLabel = dataBinding.chart.data.getDataSetByLabel(
+                                    getString(measurement.mode.getLabelRes()),
+                                    false
+                                )
+                                if (dataSetByLabel is LineDataSet) {
+                                    dataBinding.chart.highlightValues(null)
+                                    var index = -1
+                                    for (i in 0 until dataSetByLabel.entryCount) {
+                                        debug("$i : ${dataSetByLabel.getEntryForIndex(i).data}")
+                                        if ((dataSetByLabel.getEntryForIndex(i).data as Measurement).id == measurement.id) {
+                                            index = i
+                                            break
+                                        }
                                     }
-                                }
-                                if (index > -1) {
-                                    debug(
-                                        "removed ${measurement.distanceMeters}? -- ${dataSetByLabel.removeEntry(
-                                            index
-                                        )}"
-                                    )
-                                    dataSetByLabel.notifyDataSetChanged()
-                                    dataBinding.chart.data.notifyDataChanged()
-                                    dataBinding.chart.notifyDataSetChanged()
+                                    if (index > -1) {
+                                        debug(
+                                            "removed ${measurement.distanceMeters}? -- ${dataSetByLabel.removeEntry(
+                                                index
+                                            )}"
+                                        )
+                                        dataSetByLabel.notifyDataSetChanged()
+                                        dataBinding.chart.data.notifyDataChanged()
+                                        dataBinding.chart.notifyDataSetChanged()
+                                    }
                                 }
                             }
                         }
-                    }
 
-                }
-                .setNegativeButton(R.string.no, null)
-                .create().show()
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .create().show()
+            }
         }
 
         return view

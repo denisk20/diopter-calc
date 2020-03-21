@@ -1,6 +1,5 @@
 package org.endmyopia.calc.progress
 
-import android.app.AlertDialog
 import android.content.Context
 import android.widget.TextView
 import com.github.mikephil.charting.components.MarkerView
@@ -28,8 +27,6 @@ class ProgressMarkerView(context: Context, layoutResource: Int) : MarkerView(
     private val time: TextView = findViewById(R.id.time)
     private val eyes: TextView = findViewById(R.id.eyes)
     private val value: TextView = findViewById(R.id.value)
-
-    private val alertDialogBuilder = AlertDialog.Builder(context)
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         e?.let { entry ->
