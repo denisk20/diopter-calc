@@ -51,7 +51,7 @@ class ProgressFragment : Fragment() {
 
             val holder: ProgressStateHolder =
                 ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
-
+            this.holder = holder
             //chart.axisLeft.axisMinimum = yAxisShift
             //chart.axisRight.axisMinimum = yAxisShift
             with(chart) {
@@ -66,7 +66,7 @@ class ProgressFragment : Fragment() {
                     }
                 })
                 xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
-                xAxis.granularity = 1000 * 60f // ms
+                xAxis.granularity = 1000 * 60f // 1 min
                 description.text = ""
 
                 val yValueFormatter = object : ValueFormatter() {
@@ -128,10 +128,10 @@ class ProgressFragment : Fragment() {
                         )
                         .setPositiveButton(
                             R.string.yes
-                        ) { dialogInterface, i ->
+                        ) { _, i ->
                             holder.selectedValue.value?.let { measurement ->
                                 GlobalScope.launch {
-                                    holder.selectedValue?.postValue(null)
+                                    holder.selectedValue.postValue(null)
                                     AppDatabase.getInstance(context!!.applicationContext as Application)
                                         .getMeasurementDao().deleteById(measurement.id)
                                     val dataSetByLabel = chart.data.getDataSetByLabel(
@@ -181,6 +181,19 @@ class ProgressFragment : Fragment() {
                     .getMeasurementDao()
                     .getMeasurements(modes)
 
+                Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.0),
+                Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
+                Measurement(3, MeasurementMode.LEFT, 1582520779860, 0.63),
+                Measurement(4, MeasurementMode.LEFT, 1582520796860, 0.60),
+                Measurement(5, MeasurementMode.LEFT, 1582520974860, 0.65),
+                Measurement(5, MeasurementMode.LEFT, 1582520977860, 0.82),
+
+                Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
+                Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),
+                Measurement(3, MeasurementMode.RIGHT, 1582520787860, 0.4),
+                Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
+                Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
+            )
             with(modes) {
                 if (contains(MeasurementMode.RIGHT)) createDataSet(
                     measurements,
@@ -224,19 +237,7 @@ class ProgressFragment : Fragment() {
         mode: MeasurementMode
     ) {
         val label = getString(mode.getLabelRes())
-//        val values = listOf(
-//            Entry(Date(1582520774860).time.toFloat(), 0.62f),
-//            Entry(Date(1582520775860).time.toFloat(), 0.63f),
-//            Entry(Date(1582520778860).time.toFloat(), 0.60f)
-//        )
-        val fakeMeasurements = listOf(
-            Measurement(1, MeasurementMode.BOTH, 1582520776860, 0.0),
-            Measurement(2, MeasurementMode.BOTH, 1582520777860, 0.61),
-            Measurement(3, MeasurementMode.BOTH, 1582520779860, 0.63),
-            Measurement(4, MeasurementMode.BOTH, 1582520796860, 0.60),
-            Measurement(5, MeasurementMode.BOTH, 1582520974860, 0.65)
-        )
-        val filtered = fakeMeasurements.filter { m -> m.mode == mode }
+        val filtered = measurements.filter { m -> m.mode == mode }
         lateinit var values: List<Entry>
 
         if (filtered.isNotEmpty()) {
@@ -279,7 +280,7 @@ class ProgressFragment : Fragment() {
                     MeasurementMode.RIGHT -> Color.RED
                     MeasurementMode.BOTH -> Color.GREEN
                 }
-                dataSet.circleRadius = 5f
+                dataSet.circleRadius = 7f
                 dataSet.setCircleColor(dataSet.color)
 
                 chart.data.addDataSet(dataSet)
@@ -294,17 +295,15 @@ class ProgressFragment : Fragment() {
         button: Button,
         mode: MeasurementMode
     ) {
-        button.setBackgroundTintList(
-            ContextCompat.getColorStateList(
-                context!!,
-                if (selectedModes.contains(mode)) R.color.gray else R.color.white
-            )
+        button.backgroundTintList = ContextCompat.getColorStateList(
+            context!!,
+            if (selectedModes.contains(mode)) R.color.gray else R.color.white
         )
     }
 
     private fun addFilterOnClickListener(button: Button, mode: MeasurementMode) {
         button.setOnClickListener {
-            val result: ArrayList<MeasurementMode> = ArrayList<MeasurementMode>(
+            val result: ArrayList<MeasurementMode> = ArrayList(
                 dataBinding.holder?.selectedModes?.value ?: ArrayList<MeasurementMode>()
             )
 
@@ -313,7 +312,9 @@ class ProgressFragment : Fragment() {
             } else {
                 result.add(mode)
             }
-            dataBinding.holder?.selectedModes?.postValue(result)
+            dataBinding.holder?.selectedModes?.let {
+                it.postValue(result)
+            }
         }
     }
 }
