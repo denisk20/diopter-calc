@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ToggleButton
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -176,10 +176,17 @@ class ProgressFragment : Fragment() {
         GlobalScope.launch {
             dataBinding.holder?.selectedValue?.postValue(null)
             dataBinding.chart.highlightValues(null)
-            val measurements =
-                AppDatabase.getInstance(context!!.applicationContext as Application)
-                    .getMeasurementDao()
-                    .getMeasurements(modes)
+//            val measurements =
+//                AppDatabase.getInstance(context!!.applicationContext as Application)
+//                    .getMeasurementDao()
+//                    .getMeasurements(modes)
+
+            val measurements = listOf(
+                Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
+                Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
+                Measurement(3, MeasurementMode.BOTH, 1582520785860, 0.20),
+                Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
+                Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
 
                 Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.0),
                 Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
@@ -292,13 +299,10 @@ class ProgressFragment : Fragment() {
 
     private fun processFilterButtonChange(
         selectedModes: List<MeasurementMode>,
-        button: Button,
+        button: ToggleButton,
         mode: MeasurementMode
     ) {
-        button.backgroundTintList = ContextCompat.getColorStateList(
-            context!!,
-            if (selectedModes.contains(mode)) R.color.gray else R.color.white
-        )
+        button.isChecked = selectedModes.contains(mode)
     }
 
     private fun addFilterOnClickListener(button: Button, mode: MeasurementMode) {
@@ -312,9 +316,7 @@ class ProgressFragment : Fragment() {
             } else {
                 result.add(mode)
             }
-            dataBinding.holder?.selectedModes?.let {
-                it.postValue(result)
-            }
+            dataBinding.holder?.selectedModes?.postValue(result)
         }
     }
 }

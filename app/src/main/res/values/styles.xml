@@ -30,4 +30,12 @@
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">5dp</item>
     </style>
+
+    <style name="FilterButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/filter_button_background_horizontal_border</item>
+        <item name="android:textColor">@color/filter_button_text</item>
+    </style>
 </resources>

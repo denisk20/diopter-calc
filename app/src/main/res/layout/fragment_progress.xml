@@ -34,32 +34,24 @@
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent">
 
-                <Button
+                <ToggleButton
                         android:id="@+id/filterLeft"
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:text="@string/left_eye" />
+                        style="@style/FilterButton"
+                        android:textOn="@string/left_eye"
+                        android:textOff="@string/left_eye" />
 
-                <Button
+                <ToggleButton
                         android:id="@+id/filterBoth"
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:text="@string/both_eyes" />
+                        style="@style/FilterButton"
+                        android:background="@drawable/filter_button_background_full_border"
+                        android:textOn="@string/both_eyes"
+                        android:textOff="@string/both_eyes" />
 
-                <Button
+                <ToggleButton
                         android:id="@+id/filterRight"
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:text="@string/right_eye" />
+                        style="@style/FilterButton"
+                        android:textOn="@string/right_eye"
+                        android:textOff="@string/right_eye" />
             </LinearLayout>
 
             <com.github.mikephil.charting.charts.LineChart
