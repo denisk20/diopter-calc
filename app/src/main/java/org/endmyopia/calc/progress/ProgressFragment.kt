@@ -175,7 +175,7 @@ class ProgressFragment : Fragment() {
     private fun fillData(modes: List<MeasurementMode>) {
         GlobalScope.launch {
             dataBinding.holder?.selectedValue?.postValue(null)
-            dataBinding.chart.highlightValues(null)
+            dataBinding.chart.clear()
             val measurements =
                 AppDatabase.getInstance(context!!.applicationContext as Application)
                     .getMeasurementDao()
@@ -217,7 +217,7 @@ class ProgressFragment : Fragment() {
                     MeasurementMode.LEFT
                 ) else removeDataSet(MeasurementMode.LEFT)
 
-                dataBinding.chart.invalidate()
+                dataBinding.chart.notifyDataSetChanged()
             }
         }
     }
@@ -234,7 +234,6 @@ class ProgressFragment : Fragment() {
             val dataSet = chart.data.getDataSetByLabel(label, false)
             if (dataSet != null) {
                 chart.data.removeDataSet(dataSet)
-                chart.notifyDataSetChanged()
             }
         }
     }
@@ -291,9 +290,7 @@ class ProgressFragment : Fragment() {
                 dataSet.setCircleColor(dataSet.color)
 
                 chart.data.addDataSet(dataSet)
-                chart.data.notifyDataChanged()
             }
-            chart.notifyDataSetChanged()
         }
     }
 
