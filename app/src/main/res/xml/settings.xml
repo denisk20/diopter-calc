@@ -5,6 +5,6 @@
     <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="measure_with_gesture"
-        app:title="Measure with gesture" />
+            app:title="@string/measure_with_gesture" />
 
 </PreferenceScreen>

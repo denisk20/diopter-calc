@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import org.endmyopia.calc.measure.MeasureFragment
 import org.endmyopia.calc.progress.ProgressFragment
 import org.endmyopia.calc.settings.SettingsFragment
+import org.endmyopia.calc.util.debug
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -52,29 +53,55 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            val count = supportFragmentManager.backStackEntryCount
+            if (count == 1)
+                finish()
+            else {
+                super.onBackPressed()
+            }
         }
     }
 
+    override fun onKeyUp(keyCode: Int, objEvent: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed()
+            return true
+        }
+        return super.onKeyUp(keyCode, objEvent)
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val tag = item.itemId.toString()
+
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        fragmentTransaction.replace(
-            R.id.content,
-            when (item.itemId) {
-                R.id.measure -> {
-                    MeasureFragment()
-                }
-                R.id.progress -> {
-                    ProgressFragment()
-                }
-                R.id.settings -> {
-                    SettingsFragment()
-                }
-                else -> throw IllegalArgumentException("Unknown menu item ${item.itemId}")
-            }
-        )
-
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
+        if (fragment != null) {
+            fragmentTransaction.replace(
+                R.id.content,
+                fragment,
+                tag
+            )
+        } else {
+            debug("Fragment created")
+            fragmentTransaction.replace(
+                R.id.content,
+                when (item.itemId) {
+                    R.id.measure -> {
+                        MeasureFragment()
+                    }
+                    R.id.progress -> {
+                        ProgressFragment()
+                    }
+                    R.id.settings -> {
+                        SettingsFragment()
+                    }
+                    else -> throw IllegalArgumentException("Unknown menu item ${item.itemId}")
+                },
+                tag
+            )
+        }
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
         drawer_layout.closeDrawer(GravityCompat.START)
 
