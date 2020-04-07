@@ -7,4 +7,9 @@
         app:key="measure_with_gesture"
             app:title="@string/measure_with_gesture" />
 
+    <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="play_sound"
+            app:title="@string/play_sound" />
+
 </PreferenceScreen>

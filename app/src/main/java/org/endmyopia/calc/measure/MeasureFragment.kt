@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.fragment_measure.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.asFlow
@@ -31,6 +32,7 @@ class MeasureFragment : Fragment() {
 
     private lateinit var dataBinding: FragmentMeasureBinding
     private lateinit var mediaPlayer: MediaPlayer
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -127,8 +129,10 @@ class MeasureFragment : Fragment() {
     }
 
     private fun ding() {
-        if (!mediaPlayer.isPlaying) {
-            //mediaPlayer.start()
+        if (!mediaPlayer.isPlaying && PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getBoolean("play_sound", true)
+        ) {
+            mediaPlayer.start()
         }
     }
 
