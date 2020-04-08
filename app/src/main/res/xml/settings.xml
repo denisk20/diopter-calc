@@ -12,4 +12,10 @@
             app:key="play_sound"
             app:title="@string/play_sound" />
 
+    <org.endmyopia.calc.settings.NumberPickerPreference
+            app:key="my_key"
+            app:title="fuck num er"
+            app:defaultValue="12" />
+
+
 </PreferenceScreen>
