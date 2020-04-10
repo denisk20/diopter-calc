@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val item = nav_view.menu.get(1)
+        val item = nav_view.menu.get(2)
         item.setChecked(true)
         onNavigationItemSelected(item)
     }

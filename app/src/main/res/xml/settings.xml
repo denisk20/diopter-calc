@@ -13,9 +13,6 @@
             app:title="@string/play_sound" />
 
     <org.endmyopia.calc.settings.NumberPickerPreference
-            app:key="my_key"
-            app:title="fuck num er"
-            app:defaultValue="12" />
-
-
+            app:key="focus_font_size"
+            app:title="@string/focus_font_size" />
 </PreferenceScreen>

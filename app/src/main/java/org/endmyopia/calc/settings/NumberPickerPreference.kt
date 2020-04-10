@@ -3,34 +3,26 @@ package org.endmyopia.calc.settings
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
+import org.endmyopia.calc.R
 
 class NumberPickerPreference(context: Context?, attrs: AttributeSet?) :
     DialogPreference(context, attrs) {
-    var number: Int = INITIAL_VALUE
-        get() = getPersistedInt(INITIAL_VALUE)
-        set(value) {
-            field = value
-            persistInt(value)
-        }
 
-    override fun onSetInitialValue(defaultValue: Any?) {
-        number = if (defaultValue is Int) {
-            persistInt(defaultValue)
-            defaultValue
-        } else {
-            persistInt(INITIAL_VALUE)
-            INITIAL_VALUE
-        }
+    override fun getSummary(): CharSequence {
+        return getPersistedInt(INITIAL_VALUE).toString() + context.getString(R.string.pt)
     }
 
+    fun getPersistedInt() = super.getPersistedInt(INITIAL_VALUE)
+
+    fun doPersistInt(value: Int) {
+        super.persistInt(value)
+        notifyChanged()
+    }
 
     companion object {
         // allowed range
-        const val INITIAL_VALUE = 24
+        const val INITIAL_VALUE = 60
+        const val MIN_VALUE = 30
         const val MAX_VALUE = 100
-        const val MIN_VALUE = 0
-
-        // enable or disable the 'circular behavior'
-        const val WRAP_SELECTOR_WHEEL = true
     }
 }

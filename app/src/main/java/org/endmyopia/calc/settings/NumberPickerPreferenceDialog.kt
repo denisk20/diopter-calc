@@ -23,12 +23,18 @@ class NumberPickerPreferenceDialog : PreferenceDialogFragmentCompat() {
         return numberPicker
     }
 
+    override fun onBindDialogView(view: View?) {
+        super.onBindDialogView(view)
+        numberPicker.value = (preference as NumberPickerPreference).getPersistedInt()
+    }
+
     override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
             numberPicker.clearFocus()
             val newValue: Int = numberPicker.value
             if (preference.callChangeListener(newValue)) {
-                (preference as NumberPickerPreference).number = newValue
+                (preference as NumberPickerPreference).doPersistInt(newValue)
+                preference.summary
             }
         }
     }
