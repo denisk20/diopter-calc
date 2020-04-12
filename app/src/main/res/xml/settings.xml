@@ -15,4 +15,10 @@
     <org.endmyopia.calc.settings.NumberPickerPreference
             app:key="focus_font_size"
             app:title="@string/focus_font_size" />
+
+    <EditTextPreference
+            app:key="focus_text"
+            app:title="@string/focus_text"
+            app:defaultValue="@string/focus"
+            app:useSimpleSummaryProvider="true" />
 </PreferenceScreen>

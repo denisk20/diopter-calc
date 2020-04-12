@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.settings.NumberPickerPreference
+import org.endmyopia.calc.util.spToPixels
 import java.text.DecimalFormat
 
 
@@ -74,8 +75,14 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         return app.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
-    fun getFontSize() = PreferenceManager.getDefaultSharedPreferences(app.baseContext)
-        .getInt("focus_font_size", NumberPickerPreference.INITIAL_VALUE)
+    fun getFontSize() = spToPixels(
+        app.baseContext, PreferenceManager.getDefaultSharedPreferences(app.baseContext)
+            .getInt("focus_font_size", NumberPickerPreference.INITIAL_VALUE)
+    )
+
+
+    fun getFocusText() = PreferenceManager.getDefaultSharedPreferences(app.baseContext)
+        .getString("focus_text", app.baseContext.getString(R.string.focus_text))
 
     fun update(distMeters: Double) {
         val diopts = 1 / distMeters
