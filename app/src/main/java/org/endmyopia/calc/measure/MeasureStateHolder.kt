@@ -15,6 +15,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.endmyopia.calc.BR
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.settings.NumberPickerPreference
@@ -58,6 +59,8 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         MutableLiveData<MeasurementMode>(MeasurementMode.BOTH)
     }
 
+    val uiState = MutableLiveData(MeasureUiState(app.baseContext))
+
     var lastPersistedMeasurementId = 0L
 
     fun eyesString(): String {
@@ -98,7 +101,10 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         val newFocusStyle = FocusStyle.values().getOrElse((focusStyle.value?.ordinal ?: 0) + 1) {
             FocusStyle.White
         }
+        PreferenceManager.getDefaultSharedPreferences(app.baseContext).edit()
+            .putInt("focus_style", newFocusStyle.ordinal).apply()
 
+        uiState.value?.notifyPropertyChanged(BR.fontColor)
         focusStyle.postValue(newFocusStyle)
     }
 

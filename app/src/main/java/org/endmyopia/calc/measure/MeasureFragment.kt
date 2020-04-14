@@ -33,7 +33,6 @@ class MeasureFragment : Fragment() {
     private lateinit var dataBinding: FragmentMeasureBinding
     private lateinit var mediaPlayer: MediaPlayer
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,16 +66,16 @@ class MeasureFragment : Fragment() {
         dataBinding.holder?.focusStyle?.observe(viewLifecycleOwner, Observer {
             when(it){
                 White -> {
-                    measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
-                    measure_text.setTextColor(requireContext().getColor(R.color.black))
+                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
+                    //measure_text.setTextColor(requireContext().getColor(R.color.black))
                 }
                 Black -> {
-                    measure_text.setBackgroundColor(requireContext().getColor(R.color.black))
-                    measure_text.setTextColor(requireContext().getColor(R.color.white))
+                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.black))
+                    //measure_text.setTextColor(requireContext().getColor(R.color.white))
                 }
                 Color -> {
-                    measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
-                    measure_text.setTextColor(requireContext().getColor(R.color.green))
+                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
+                    //measure_text.setTextColor(requireContext().getColor(R.color.green))
                 }
             }.exhaustive
         })

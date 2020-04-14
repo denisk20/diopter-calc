@@ -44,9 +44,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val item = nav_view.menu.get(2)
-        item.setChecked(true)
-        onNavigationItemSelected(item)
+        val startMenuItem = nav_view.menu.get(0)
+        startMenuItem.setChecked(true)
+        onNavigationItemSelected(startMenuItem)
     }
 
     override fun onBackPressed() {

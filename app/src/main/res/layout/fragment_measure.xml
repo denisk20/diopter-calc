@@ -35,7 +35,7 @@
                     android:ellipsize="end"
                 android:gravity="center"
                     android:text="@{holder.hasTakenMeasurement ? @string/measurement_taken(holder.eyesString()) : holder.focusText}"
-                android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : @color/black}"
+                    android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : holder.uiState.fontColor}"
                     android:textSize="@{holder.hasTakenMeasurement ? 30 : holder.fontSize}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
