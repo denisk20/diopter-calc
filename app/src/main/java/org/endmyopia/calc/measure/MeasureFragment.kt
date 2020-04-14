@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -24,9 +23,7 @@ import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentMeasureBinding
-import org.endmyopia.calc.measure.FocusStyle.*
 import org.endmyopia.calc.util.debug
-import org.endmyopia.calc.util.exhaustive
 
 class MeasureFragment : Fragment() {
 
@@ -52,33 +49,12 @@ class MeasureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        measure_text.setOnClickListener {
-            dataBinding.holder?.toggleStyle()
-        }
-
         // subscribe to the volume pressed events
         (requireActivity() as MainActivity).volumePressedEvent.asFlow()
             .onEach {
                 takeMeasurement()
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
-
-        dataBinding.holder?.focusStyle?.observe(viewLifecycleOwner, Observer {
-            when(it){
-                White -> {
-                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
-                    //measure_text.setTextColor(requireContext().getColor(R.color.black))
-                }
-                Black -> {
-                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.black))
-                    //measure_text.setTextColor(requireContext().getColor(R.color.white))
-                }
-                Color -> {
-                    //measure_text.setBackgroundColor(requireContext().getColor(R.color.white))
-                    //measure_text.setTextColor(requireContext().getColor(R.color.green))
-                }
-            }.exhaustive
-        })
     }
 
     override fun onStart() {

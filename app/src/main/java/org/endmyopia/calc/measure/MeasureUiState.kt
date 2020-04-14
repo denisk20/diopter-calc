@@ -14,10 +14,8 @@ class MeasureUiState(val context: Context) : BaseObservable() {
 
     @Bindable
     fun getFontColor(): Int {
-        val ordinal =
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("focus_style", 0)
         return context.resources.getColor(
-            when (ordinal) {
+            when (getFocusStyleOrdinal()) {
                 0 -> R.color.white
                 1 -> R.color.black
                 2 -> R.color.green
@@ -25,5 +23,25 @@ class MeasureUiState(val context: Context) : BaseObservable() {
             }
             , null
         )
+    }
+
+    @Bindable
+    fun getBackgroundColor(): Int {
+        return context.resources.getColor(
+            when (getFocusStyleOrdinal()) {
+                0 -> R.color.black
+                1 -> R.color.white
+                2 -> R.color.white
+                else -> R.color.white
+            }
+            , null
+        )
+    }
+
+    fun getFocusStyleOrdinal(): Int =
+        PreferenceManager.getDefaultSharedPreferences(context).getInt(FOCUS_STYLE_KEY, 0)
+
+    companion object {
+        const val FOCUS_STYLE_KEY = "focus_style"
     }
 }

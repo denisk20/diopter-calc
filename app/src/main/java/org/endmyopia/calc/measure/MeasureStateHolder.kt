@@ -51,15 +51,11 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         MutableLiveData<Boolean>(false)
     }
 
-    val focusStyle: MutableLiveData<FocusStyle> by lazy {
-        MutableLiveData<FocusStyle>(FocusStyle.White)
-    }
-
     val mode: MutableLiveData<MeasurementMode> by lazy {
         MutableLiveData<MeasurementMode>(MeasurementMode.BOTH)
     }
 
-    val uiState = MutableLiveData(MeasureUiState(app.baseContext))
+    val uiState = MeasureUiState(app.baseContext)
 
     var lastPersistedMeasurementId = 0L
 
@@ -97,15 +93,20 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         dioptersStr.postValue(formatDiopt.format(diopts))
     }
 
-    fun toggleStyle() {
-        val newFocusStyle = FocusStyle.values().getOrElse((focusStyle.value?.ordinal ?: 0) + 1) {
-            FocusStyle.White
-        }
-        PreferenceManager.getDefaultSharedPreferences(app.baseContext).edit()
-            .putInt("focus_style", newFocusStyle.ordinal).apply()
+    fun toggleStyle(v: View) {
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(app.baseContext)
+        val newFocusStyleOrdinal =
+            (sharedPreferences.getInt(
+                MeasureUiState.FOCUS_STYLE_KEY,
+                0
+            ) + 1) % FocusStyle.values().size
 
-        uiState.value?.notifyPropertyChanged(BR.fontColor)
-        focusStyle.postValue(newFocusStyle)
+        sharedPreferences.edit()
+            .putInt(MeasureUiState.FOCUS_STYLE_KEY, newFocusStyleOrdinal).apply()
+
+        uiState.notifyPropertyChanged(BR.fontColor)
+        uiState.notifyPropertyChanged(BR.backgroundColor)
     }
 
     object CommonBindingUtil {
