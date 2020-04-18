@@ -98,7 +98,12 @@ class ProgressFragment : Fragment() {
                         return "n/a"
                     }
                 }
-
+                val markerView = ProgressMarkerView(
+                    context,
+                    R.layout.progress_popup
+                )
+                markerView.chartView = chart
+                chart.marker = markerView
             }
             deleteDialogBuilder = AlertDialog.Builder(context!!)
 
@@ -243,14 +248,6 @@ class ProgressFragment : Fragment() {
         with(dataBinding) {
             if (chart.data == null) {
                 chart.data = LineData()
-                this@ProgressFragment.context?.let {
-                    val markerView = ProgressMarkerView(
-                        it,
-                        R.layout.progress_popup
-                    )
-                    markerView.chartView = chart
-                    chart.marker = markerView
-                }
             }
             val dataSetByLabel = chart.data.getDataSetByLabel(label, false)
             if (dataSetByLabel is LineDataSet) {
