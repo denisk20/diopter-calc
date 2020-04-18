@@ -28,6 +28,7 @@ import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
 import org.endmyopia.calc.measure.MeasureStateHolder
 import org.endmyopia.calc.util.debug
+import org.endmyopia.calc.util.getEyesText
 import org.endmyopia.calc.util.getLabelRes
 import java.text.SimpleDateFormat
 import java.util.*
@@ -130,7 +131,7 @@ class ProgressFragment : Fragment() {
                             getString(
                                 R.string.delete_measurement,
                                 MeasureStateHolder.formatDiopt.format(it.distanceMeters),
-                                it.mode
+                                getEyesText(it.mode, context!!)
                             )
                         )
                         .setPositiveButton(
