@@ -18,7 +18,7 @@
     <string name="both_eyes">both eyes</string>
     <string name="deleted">Measurement deleted</string>
     <string name="delete">Delete</string>
-    <string name="delete_measurement">Delete measurement %s?</string>
+    <string name="delete_measurement">Delete measurement %s for %s eyes?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="measure_with_gesture">Measure by covering your nose</string>

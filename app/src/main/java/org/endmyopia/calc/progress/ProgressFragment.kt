@@ -66,7 +66,7 @@ class ProgressFragment : Fragment() {
                     }
                 })
                 xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
-                xAxis.granularity = 1000 * 60f // 1 min
+                xAxis.granularity = 1000 * 60f * 60f // 1 hour
                 description.text = ""
 
                 val yValueFormatter = object : ValueFormatter() {
@@ -119,12 +119,13 @@ class ProgressFragment : Fragment() {
             })
 
             delete.setOnClickListener {
-                holder.selectedValue.value?.distanceMeters?.let {
+                holder.selectedValue.value?.let {
                     deleteDialogBuilder
                         .setTitle(
                             getString(
                                 R.string.delete_measurement,
-                                MeasureStateHolder.formatDiopt.format(it)
+                                MeasureStateHolder.formatDiopt.format(it.distanceMeters),
+                                it.mode
                             )
                         )
                         .setPositiveButton(
@@ -182,50 +183,34 @@ class ProgressFragment : Fragment() {
             dataBinding.holder?.let {
                 dataBinding.holder?.selectedValue?.postValue(null)
                 dataBinding.chart.clear()
-//                val measurements =
-//                    AppDatabase.getInstance(context!!.applicationContext as Application)
-//                        .getMeasurementDao()
-//                        .getMeasurements(it.initialModes)
-                val measurements = listOf(
-                    Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
-                    Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
-                    Measurement(3, MeasurementMode.BOTH, 1582520785860, 0.20),
-                    Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
-                    Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
-
-                    Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.0),
-                    Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
-                    Measurement(3, MeasurementMode.LEFT, 1582520779860, 0.63),
-                    Measurement(4, MeasurementMode.LEFT, 1582520796860, 0.60),
-                    Measurement(5, MeasurementMode.LEFT, 1582520974860, 0.65),
-                    Measurement(5, MeasurementMode.LEFT, 1582520977860, 0.82),
-
-                    Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
-                    Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),
-                    Measurement(3, MeasurementMode.RIGHT, 1582520787860, 0.4),
-                    Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
-                    Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
-                )
+                val measurements =
+                    AppDatabase.getInstance(context!!.applicationContext as Application)
+                        .getMeasurementDao()
+                        .getMeasurements(it.initialModes)
+//                val measurements = listOf(
+//                    Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
+//                    Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
+//                    Measurement(3, MeasurementMode.BOTH, 1582520785860, 0.20),
+//                    Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
+//                    Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
+//
+//                    Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.0),
+//                    Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
+//                    Measurement(3, MeasurementMode.LEFT, 1582520779860, 0.63),
+//                    Measurement(4, MeasurementMode.LEFT, 1582520796860, 0.60),
+//                    Measurement(5, MeasurementMode.LEFT, 1582520974860, 0.65),
+//                    Measurement(5, MeasurementMode.LEFT, 1582520977860, 0.82),
+//
+//                    Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
+//                    Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),
+//                    Measurement(3, MeasurementMode.RIGHT, 1582520787860, 0.4),
+//                    Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
+//                    Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
+//                )
                 for (mode in it.initialModes) {
                     createDataSet(measurements, mode)
                 }
                 dataBinding.chart.notifyDataSetChanged()
-            }
-        }
-    }
-
-    private fun removeDataSet(
-        mode: MeasurementMode
-    ) {
-        with(dataBinding) {
-            if (chart.data == null) {
-                chart.data = LineData()
-            }
-
-            val label = getString(mode.getLabelRes())
-            val dataSet = chart.data.getDataSetByLabel(label, false)
-            if (dataSet != null) {
-                chart.data.removeDataSet(dataSet)
             }
         }
     }

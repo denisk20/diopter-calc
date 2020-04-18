@@ -1,7 +1,10 @@
 package org.endmyopia.calc.util
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
+import org.endmyopia.calc.R
+import org.endmyopia.calc.data.MeasurementMode
 
 /**
  * @author denisk
@@ -25,3 +28,11 @@ fun isEmulator() = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith
         || Build.PRODUCT.contains("vbox86p")
         || Build.PRODUCT.contains("emulator")
         || Build.PRODUCT.contains("simulator")
+
+fun getEyesText(mode: MeasurementMode, context: Context): String {
+    return when (mode) {
+        MeasurementMode.BOTH -> context.getString(R.string.both_eyes)
+        MeasurementMode.LEFT -> context.getString(R.string.left_eye)
+        MeasurementMode.RIGHT -> context.getString(R.string.right_eye)
+    }
+}
