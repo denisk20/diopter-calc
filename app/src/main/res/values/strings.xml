@@ -26,4 +26,7 @@
     <string name="pt">pt</string>
     <string name="focus_font_size">Focus text font size</string>
     <string name="focus_text">Focus text</string>
+
+    <string name="change_color_hint">You can tap on the focus text to change its color</string>
+    <string name="info">Useful tips</string>
 </resources>
