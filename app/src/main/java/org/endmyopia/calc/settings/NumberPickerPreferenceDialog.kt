@@ -12,7 +12,6 @@ import androidx.preference.PreferenceDialogFragmentCompat
  * @since 4/8/20.
  */
 class NumberPickerPreferenceDialog : PreferenceDialogFragmentCompat() {
-    var number: Int = 24
     lateinit var numberPicker: NumberPicker
 
     override fun onCreateDialogView(context: Context?): View {

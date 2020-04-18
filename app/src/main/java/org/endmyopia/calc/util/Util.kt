@@ -1,6 +1,5 @@
 package org.endmyopia.calc.util
 
-import android.content.Context
 import android.os.Build
 import android.util.Log
 
@@ -26,8 +25,3 @@ fun isEmulator() = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith
         || Build.PRODUCT.contains("vbox86p")
         || Build.PRODUCT.contains("emulator")
         || Build.PRODUCT.contains("simulator")
-
-fun spToPixels(context: Context, sp: Int): Int {
-    val scaledDensity = context.getResources().getDisplayMetrics().scaledDensity
-    return sp * scaledDensity.toInt()
-}
