@@ -21,7 +21,6 @@ import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import org.endmyopia.calc.measure.MeasureFragment
 import org.endmyopia.calc.progress.ProgressFragment
 import org.endmyopia.calc.settings.SettingsFragment
-import org.endmyopia.calc.util.debug
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -95,7 +94,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 tag
             )
         } else {
-            debug("Fragment created")
             fragmentTransaction.replace(
                 R.id.content,
                 when (item.itemId) {
@@ -113,6 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 tag
             )
         }
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
         drawer_layout.closeDrawer(GravityCompat.START)
 
