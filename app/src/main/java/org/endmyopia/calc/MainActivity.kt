@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
@@ -44,9 +45,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val startMenuItem = nav_view.menu.get(0)
+        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 0) ?: 0]
         startMenuItem.setChecked(true)
         onNavigationItemSelected(startMenuItem)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var index = 0
+        nav_view.menu.forEachIndexed { theIndex, theItem ->
+            if (theItem.isChecked) {
+                index = theIndex
+            }
+        }
+
+        outState.putInt(MENU_ITEM, index)
     }
 
     override fun onBackPressed() {
@@ -72,7 +85,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val tag = item.itemId.toString()
-
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
         val fragment = supportFragmentManager.findFragmentByTag(tag)
@@ -143,4 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    companion object {
+        const val MENU_ITEM = "selected_menu_item"
+    }
 }
