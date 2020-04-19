@@ -113,7 +113,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 tag
             )
         }
-        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
         drawer_layout.closeDrawer(GravityCompat.START)
 
