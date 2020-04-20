@@ -72,6 +72,16 @@ class FaceArFragment : ArFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val holder: MeasureStateHolder =
+            ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
+        if (holder.hasTakenMeasurement.value == true) {
+            arSceneView.pause()
+        } else
+            arSceneView.resume()
+    }
+
     override fun getSessionConfiguration(session: Session): Config {
         val config = Config(session)
         config.augmentedFaceMode = AugmentedFaceMode.MESH3D
@@ -110,27 +120,18 @@ class FaceArFragment : ArFragment() {
         arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
 
         val holder: MeasureStateHolder =
-            ViewModelProvider(activity!!).get(MeasureStateHolder::class.java)
+            ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
 
-        holder.hasTakenMeasurement.observe(activity!!, androidx.lifecycle.Observer {
+        holder.hasTakenMeasurement.observe(requireActivity(), androidx.lifecycle.Observer {
             handleTakenMeasurement(it)
         })
-
 
         arSceneView.scene.addOnUpdateListener(onUpdateListener)
     }
 
     override fun onStop() {
         arSceneView.scene.removeOnUpdateListener(onUpdateListener)
-        arSceneView.pause()
         super.onStop()
-    }
-
-    override fun onDestroy() {
-        if (arSceneView != null) {
-            arSceneView.destroy()
-        }
-        super.onDestroy()
     }
 
     private fun handleTakenMeasurement(hasTakenIt: Boolean) {
