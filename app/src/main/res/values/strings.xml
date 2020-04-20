@@ -21,7 +21,7 @@
     <string name="delete_measurement">Delete measurement %s for %s?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="measure_with_gesture">Measure by covering your nose</string>
+    <string name="measure_with_gesture">Measure by covering nose</string>
     <string name="play_sound">Play sound when measuring</string>
     <string name="pt">pt</string>
     <string name="focus_font_size">Focus text font size</string>
