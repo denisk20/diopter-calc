@@ -51,7 +51,7 @@ class ProgressFragment : Fragment() {
         with(dataBinding) {
 
             val holder: ProgressStateHolder =
-                ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
+                ViewModelProvider(requireActivity()).get(ProgressStateHolder::class.java)
             this.holder = holder
             //chart.axisLeft.axisMinimum = yAxisShift
             //chart.axisRight.axisMinimum = yAxisShift
@@ -106,7 +106,7 @@ class ProgressFragment : Fragment() {
                 markerView.chartView = chart
                 chart.marker = markerView
             }
-            deleteDialogBuilder = AlertDialog.Builder(context!!)
+            deleteDialogBuilder = AlertDialog.Builder(requireContext())
 
             fillData()
 
@@ -131,7 +131,7 @@ class ProgressFragment : Fragment() {
                             getString(
                                 R.string.delete_measurement,
                                 MeasureStateHolder.formatDiopt.format(it.distanceMeters),
-                                getEyesText(it.mode, context!!)
+                                getEyesText(it.mode, requireContext())
                             )
                         )
                         .setPositiveButton(
@@ -140,7 +140,7 @@ class ProgressFragment : Fragment() {
                             holder.selectedValue.value?.let { measurement ->
                                 GlobalScope.launch {
                                     holder.selectedValue.postValue(null)
-                                    AppDatabase.getInstance(context!!.applicationContext as Application)
+                                    AppDatabase.getInstance(requireContext().applicationContext as Application)
                                         .getMeasurementDao().deleteById(measurement.id)
                                     val dataSetByLabel = chart.data.getDataSetByLabel(
                                         getString(measurement.mode.getLabelRes()),
@@ -190,7 +190,7 @@ class ProgressFragment : Fragment() {
                 dataBinding.holder?.selectedValue?.postValue(null)
                 dataBinding.chart.clear()
                 val measurements =
-                    AppDatabase.getInstance(context!!.applicationContext as Application)
+                    AppDatabase.getInstance(requireContext().applicationContext as Application)
                         .getMeasurementDao()
                         .getMeasurements(it.initialModes)
 //                val measurements = listOf(
@@ -233,7 +233,7 @@ class ProgressFragment : Fragment() {
             val minTimestamp =
                 filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
                     .date
-            ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
+            ViewModelProvider(requireActivity()).get(ProgressStateHolder::class.java)
                 .minTimestamp.postValue(minTimestamp)
             values = filtered
                 .map { m ->
