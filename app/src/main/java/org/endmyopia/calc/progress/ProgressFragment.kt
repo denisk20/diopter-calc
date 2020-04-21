@@ -28,6 +28,7 @@ import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
 import org.endmyopia.calc.measure.MeasureStateHolder
 import org.endmyopia.calc.util.debug
+import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getEyesText
 import org.endmyopia.calc.util.getLabelRes
 import java.text.SimpleDateFormat
@@ -239,7 +240,7 @@ class ProgressFragment : Fragment() {
                 .map { m ->
                     Entry(
                         (m.date - minTimestamp).toFloat(),
-                        m.distanceMeters.toFloat(),
+                        dpt(m.distanceMeters).toFloat(),
                         m
                     )
                 }

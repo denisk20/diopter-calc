@@ -8,6 +8,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.measure.MeasureStateHolder
+import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getEyesText
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,7 +37,7 @@ class ProgressMarkerView(context: Context, layoutResource: Int) : MarkerView(
                     date.text = DATE_FORMAT.format(dateVal)
                     time.text = TIME_FORMAT.format(dateVal)
                     eyes.text = getEyesText(it.mode, context)
-                    value.text = MeasureStateHolder.formatDiopt.format(it.distanceMeters)
+                    value.text = MeasureStateHolder.formatDiopt.format(dpt(it.distanceMeters))
                 }
             }
         }

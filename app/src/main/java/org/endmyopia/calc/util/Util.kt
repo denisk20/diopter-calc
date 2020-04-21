@@ -36,3 +36,5 @@ fun getEyesText(mode: MeasurementMode, context: Context): String {
         MeasurementMode.RIGHT -> context.getString(R.string.right_eye)
     }
 }
+
+fun dpt(meters: Double) = -1 / meters

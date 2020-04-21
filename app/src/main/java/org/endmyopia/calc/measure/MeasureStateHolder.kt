@@ -19,6 +19,7 @@ import org.endmyopia.calc.BR
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.settings.NumberPickerPreference
+import org.endmyopia.calc.util.dpt
 import java.text.DecimalFormat
 
 
@@ -80,7 +81,7 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         .getString("focus_text", app.baseContext.getString(R.string.focus_text))
 
     fun update(distMeters: Double) {
-        val diopts = 1 / distMeters
+        val diopts = dpt(distMeters)
 
         distanceMetersVal.postValue(distMeters)
         dioptersVal.postValue(diopts)
@@ -155,6 +156,6 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
 
     companion object {
         val formatDist = DecimalFormat("#.0 cm")
-        val formatDiopt = DecimalFormat("-#.00 dpt")
+        val formatDiopt = DecimalFormat("#.00 dpt")
     }
 }
