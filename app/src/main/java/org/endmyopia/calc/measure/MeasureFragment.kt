@@ -30,6 +30,8 @@ class MeasureFragment : Fragment() {
     private lateinit var dataBinding: FragmentMeasureBinding
     private lateinit var mediaPlayer: MediaPlayer
 
+    val COVER_NOSE_TIP_SHOWN = "COVER_NOSE_TIP_SHOWN"
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,7 +42,7 @@ class MeasureFragment : Fragment() {
         dataBinding = FragmentMeasureBinding.bind(view)
         dataBinding.lifecycleOwner = this
         val holder: MeasureStateHolder =
-            ViewModelProvider(activity!!).get(MeasureStateHolder::class.java)
+            ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
         dataBinding.holder = holder
 
         return view
@@ -138,6 +140,18 @@ class MeasureFragment : Fragment() {
                 dataBinding.holder?.lastPersistedMeasurementId = id
             }
             ding()
+            showProTip()
+
+        }
+    }
+
+    private fun showProTip() {
+        if (!PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(COVER_NOSE_TIP_SHOWN, false)
+        ) {
+            Toast.makeText(context, R.string.cover_nose_tip, Toast.LENGTH_LONG).show()
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putBoolean(COVER_NOSE_TIP_SHOWN, true).apply()
         }
     }
 
