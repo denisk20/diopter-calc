@@ -21,6 +21,12 @@
             app:title="@string/focus_text"
             app:defaultValue="@string/focus"
             app:useSimpleSummaryProvider="true" />
+
+    <Preference
+            app:title="@string/export"
+            app:key="export"
+            app:summary="@string/export_summary" />
+
     <PreferenceCategory app:title="@string/info">
         <Preference
                 app:selectable="false"

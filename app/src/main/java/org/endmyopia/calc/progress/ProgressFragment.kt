@@ -195,7 +195,7 @@ class ProgressFragment : Fragment() {
                 val measurements =
                     AppDatabase.getInstance(requireContext().applicationContext as Application)
                         .getMeasurementDao()
-                        .getMeasurements(it.initialModes)
+                        .getMeasurements(ProgressStateHolder.initialModes)
 //                val measurements = listOf(
 //                    Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
 //                    Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
@@ -216,7 +216,7 @@ class ProgressFragment : Fragment() {
 //                    Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
 //                    Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
 //                )
-                for (mode in it.initialModes) {
+                for (mode in ProgressStateHolder.initialModes) {
                     createDataSet(measurements, mode)
                 }
                 dataBinding.chart.notifyDataSetChanged()
