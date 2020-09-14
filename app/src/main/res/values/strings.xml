@@ -33,4 +33,7 @@
     <string name="export_summary">Export your progress as a em.json file</string>
     <string name="export">Export</string>
     <string name="sharing_progress">Progress as for %s</string>
+    <string name="cant_import">Can\'t import data: %s</string>
+    <string name="import_warn">This will import the progress data and delete your existing data (if any). This can\'t be undone. Proceed?</string>
+    <string name="import_complete">Import Completed</string>
 </resources>
