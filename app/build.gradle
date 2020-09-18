@@ -86,7 +86,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
     implementation 'com.google.code.gson:gson:2.8.6'
-
+    implementation "io.noties.markwon:core:4.5.1"
+    implementation 'io.noties.markwon:image:4.5.1'
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
 }

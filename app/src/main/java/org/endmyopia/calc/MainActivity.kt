@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
+import org.endmyopia.calc.help.HelpFragment
 import org.endmyopia.calc.measure.MeasureFragment
 import org.endmyopia.calc.progress.ProgressFragment
 import org.endmyopia.calc.settings.SettingsFragment
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 0) ?: 0]
+        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 3) ?: 3]
         startMenuItem.setChecked(true)
         onNavigationItemSelected(startMenuItem)
     }
@@ -204,6 +205,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     R.id.settings -> {
                         SettingsFragment()
+                    }
+                    R.id.help -> {
+                        HelpFragment()
                     }
                     else -> throw IllegalArgumentException("Unknown menu item ${item.itemId}")
                 },

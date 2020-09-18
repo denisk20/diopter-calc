@@ -36,4 +36,13 @@
     <string name="cant_import">Can\'t import data: %s</string>
     <string name="import_warn">This will import the progress data and delete your existing data (if any). This can\'t be undone. Proceed?</string>
     <string name="import_complete">Import Completed</string>
+    <string name="help_menu">Help</string>
+    <string name="help"># Hello!\n
+
+      > a quote
+
+      ```
+      code block
+      ```
+    </string>
 </resources>

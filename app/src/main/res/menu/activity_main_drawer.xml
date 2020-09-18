@@ -7,14 +7,18 @@
         <item
                 android:id="@+id/measure"
                 android:icon="@drawable/ic_menu_camera"
-                android:title="@string/measure"/>
+                android:title="@string/measure" />
         <item
                 android:id="@+id/progress"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="@string/progress"/>
+                android:title="@string/progress" />
         <item
                 android:id="@+id/settings"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="@string/settings"/>
+                android:title="@string/settings" />
+        <item
+                android:id="@+id/help"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="@string/help_menu" />
     </group>
 </menu>
