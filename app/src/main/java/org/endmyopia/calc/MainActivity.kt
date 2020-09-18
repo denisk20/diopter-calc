@@ -91,57 +91,56 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun importIfRequested() {
         intent?.let { intent ->
-            if (intent.type == "application/json") {
-                intent.data?.let { data ->
-                    contentResolver.openInputStream(data)?.let { inputStream ->
-                        inputStream.bufferedReader().use { reader ->
-                            var measurements: List<Measurement>? = null
-                            try {
-                                measurements = getList(reader, Measurement::class.java)
-                            } catch (e: JsonSyntaxException) {
-                                Toast.makeText(
-                                    this,
-                                    getString(R.string.cant_import, e.message),
-                                    Toast.LENGTH_LONG
-                                )
-                                    .show()
-                            }
-                            measurements?.let { measurements ->
-                                val dialogClickListener =
-                                    DialogInterface.OnClickListener { dialog, which ->
-                                        when (which) {
-                                            DialogInterface.BUTTON_POSITIVE -> {
-                                                GlobalScope.launch {
-                                                    val measurementDao =
-                                                        AppDatabase.getInstance(applicationContext as Application)
-                                                            .getMeasurementDao()
+            val uri = intent.data ?: intent.clipData?.getItemAt(0)?.uri
+            if (uri != null) {
+                contentResolver.openInputStream(uri)?.let { inputStream ->
+                    inputStream.bufferedReader().use { reader ->
+                        var measurements: List<Measurement>? = null
+                        try {
+                            measurements = getList(reader, Measurement::class.java)
+                        } catch (e: JsonSyntaxException) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.cant_import, e.message),
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                        }
+                        measurements?.let { measurements ->
+                            val dialogClickListener =
+                                DialogInterface.OnClickListener { dialog, which ->
+                                    when (which) {
+                                        DialogInterface.BUTTON_POSITIVE -> {
+                                            GlobalScope.launch {
+                                                val measurementDao =
+                                                    AppDatabase.getInstance(applicationContext as Application)
+                                                        .getMeasurementDao()
 
-                                                    measurementDao.deleteAll()
-                                                    for (measurement in measurements) {
-                                                        measurementDao.insert(measurement)
-                                                    }
+                                                measurementDao.deleteAll()
+                                                for (measurement in measurements) {
+                                                    measurementDao.insert(measurement)
+                                                }
 
-                                                    withContext(Dispatchers.Main) {
-                                                        Toast.makeText(
-                                                            this@MainActivity,
-                                                            R.string.import_complete,
-                                                            Toast.LENGTH_LONG
-                                                        ).show()
-                                                    }
+                                                withContext(Dispatchers.Main) {
+                                                    Toast.makeText(
+                                                        this@MainActivity,
+                                                        R.string.import_complete,
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
                                                 }
                                             }
-                                            DialogInterface.BUTTON_NEGATIVE -> {
-                                                dialog.dismiss()
-                                            }
+                                        }
+                                        DialogInterface.BUTTON_NEGATIVE -> {
+                                            dialog.dismiss()
                                         }
                                     }
+                                }
 
-                                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                                builder.setMessage(R.string.import_warn)
-                                    .setPositiveButton(R.string.yes, dialogClickListener)
-                                    .setNegativeButton(R.string.no, dialogClickListener).show()
+                            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                            builder.setMessage(R.string.import_warn)
+                                .setPositiveButton(R.string.yes, dialogClickListener)
+                                .setNegativeButton(R.string.no, dialogClickListener).show()
 
-                            }
                         }
                     }
                 }
