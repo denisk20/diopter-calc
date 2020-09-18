@@ -49,3 +49,8 @@ If you see the black screen instead of the measurement screen it's likely becaus
 not in [this list](https://developers.google.com/ar/discover/supported-devices). The app uses ArCore
 framework to measure the distance to the user's face, and for some reason this library doesn't work
 on all android devices.
+
+# Known issues
+
+If you import your progress and rotate the screen you'll be prompted to import again. To fix this,
+force close the app and re-open.
