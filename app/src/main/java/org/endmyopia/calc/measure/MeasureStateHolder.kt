@@ -78,7 +78,7 @@ class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
         .getInt("focus_font_size", NumberPickerPreference.INITIAL_VALUE)
 
     fun getFocusText() = PreferenceManager.getDefaultSharedPreferences(app.baseContext)
-        .getString("focus_text", app.baseContext.getString(R.string.focus_text))
+        .getString("focus_text", app.baseContext.getString(R.string.focus))
 
     fun update(distMeters: Double) {
         val diopts = dpt(distMeters)
