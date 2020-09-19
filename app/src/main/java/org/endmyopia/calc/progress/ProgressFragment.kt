@@ -133,7 +133,7 @@ class ProgressFragment : Fragment() {
                         .setTitle(
                             getString(
                                 R.string.delete_measurement,
-                                MeasureStateHolder.formatDiopt.format(it.distanceMeters),
+                                MeasureStateHolder.formatDiopt.format(dpt(it.distanceMeters)),
                                 getEyesText(it.mode, requireContext())
                             )
                         )
