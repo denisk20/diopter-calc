@@ -120,11 +120,11 @@ class ProgressFragment : Fragment() {
                 setDataSetVisible(MeasurementMode.RIGHT, modes)
                 setDataSetVisible(MeasurementMode.BOTH, modes)
                 dataBinding.chart.invalidate()
-                Thread.sleep(150)
+                Thread.sleep(300)
             })
             holder.minTimestamp.observe(viewLifecycleOwner, Observer {
                 chart.invalidate()
-                Thread.sleep(150)
+                Thread.sleep(300)
             })
 
             delete.setOnClickListener {
