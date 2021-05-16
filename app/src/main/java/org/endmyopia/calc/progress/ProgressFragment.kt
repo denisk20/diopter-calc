@@ -206,8 +206,16 @@ class ProgressFragment : Fragment() {
 //                    Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
 //                    Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
 //                )
+
+                val minTimestamp =
+                    measurements.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
+                        .date
+                val maxTimestamp =
+                    measurements.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
+                        .date
+
                 for (mode in ProgressStateHolder.initialModes) {
-                    createDataSet(measurements, mode)
+                    createDataSet(measurements, mode, minTimestamp, maxTimestamp)
                 }
                 dataBinding.chart.notifyDataSetChanged()
             }
@@ -216,20 +224,19 @@ class ProgressFragment : Fragment() {
 
     private fun createDataSet(
         measurements: List<Measurement>,
-        mode: MeasurementMode
+        mode: MeasurementMode,
+        minTimestamp: Long,
+        maxTimestamp: Long
     ) {
         val label = getString(mode.getLabelRes())
         val filtered = measurements.filter { m -> m.mode == mode }
         lateinit var values: List<Entry>
 
         if (filtered.isNotEmpty()) {
-            val minTimestamp =
-                filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
-                    .date
             values = filtered
                 .map { m ->
                     Entry(
-                        (m.date - minTimestamp.toFloat()),
+                        if (minTimestamp == maxTimestamp) 0f else ((m.date - minTimestamp).toFloat() / (maxTimestamp - minTimestamp)),
                         dpt(m.distanceMeters).toFloat(),
                         m
                     )
