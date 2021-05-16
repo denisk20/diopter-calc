@@ -226,13 +226,10 @@ class ProgressFragment : Fragment() {
             val minTimestamp =
                 filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
                     .date
-            val maxTimestamp =
-                filtered.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
-                    .date
             values = filtered
                 .map { m ->
                     Entry(
-                        ((m.date - minTimestamp) / (maxTimestamp - minTimestamp.toFloat())),
+                        (m.date - minTimestamp.toFloat()),
                         dpt(m.distanceMeters).toFloat(),
                         m
                     )
