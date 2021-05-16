@@ -11,7 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -37,6 +36,8 @@ import kotlin.collections.ArrayList
 
 
 class ProgressFragment : Fragment() {
+
+    val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
 
     private lateinit var dataBinding: FragmentProgressBinding
     private lateinit var deleteDialogBuilder: AlertDialog.Builder
@@ -67,8 +68,8 @@ class ProgressFragment : Fragment() {
                         holder.selectedValue.postValue(e?.data as Measurement?)
                     }
                 })
-                xAxis.position = XAxis.XAxisPosition.TOP_INSIDE
-                xAxis.granularity = 1000 * 60f * 60f // 1 hour
+                xAxis.isEnabled = false
+
                 description.text = ""
 
                 val yValueFormatter = object : ValueFormatter() {
@@ -88,24 +89,17 @@ class ProgressFragment : Fragment() {
                 axisLeft.setDrawTopYLabelEntry(false)
                 axisRight.setDrawTopYLabelEntry(false)
 
-                xAxis.valueFormatter = object : ValueFormatter() {
-                    val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH)
-                    override fun getFormattedValue(
-                        value: Float
-                    ): String {
-                        ViewModelProvider(activity!!).get(ProgressStateHolder::class.java)
-                            .minTimestamp.value?.let {
-                            return dateFormat.format(Date(it + value.toLong()))
-                        }
-                        return "n/a"
-                    }
-                }
                 val markerView = ProgressMarkerView(
                     context,
                     R.layout.progress_popup
                 )
                 markerView.chartView = chart
                 chart.marker = markerView
+
+                xAxis.setDrawGridLines(false)
+                axisLeft.setDrawGridLines(false)
+                axisRight.setDrawGridLines(false)
+
             }
             deleteDialogBuilder = AlertDialog.Builder(requireContext())
 
@@ -120,10 +114,6 @@ class ProgressFragment : Fragment() {
                 setDataSetVisible(MeasurementMode.RIGHT, modes)
                 setDataSetVisible(MeasurementMode.BOTH, modes)
                 dataBinding.chart.invalidate()
-                Thread.sleep(300)
-            })
-            holder.minTimestamp.observe(viewLifecycleOwner, Observer {
-                chart.invalidate()
                 Thread.sleep(300)
             })
 
@@ -203,7 +193,7 @@ class ProgressFragment : Fragment() {
 //                    Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
 //                    Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
 //
-//                    Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.0),
+//                    Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.5),
 //                    Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
 //                    Measurement(3, MeasurementMode.LEFT, 1582520779860, 0.63),
 //                    Measurement(4, MeasurementMode.LEFT, 1582520796860, 0.60),
@@ -236,12 +226,13 @@ class ProgressFragment : Fragment() {
             val minTimestamp =
                 filtered.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
                     .date
-            ViewModelProvider(requireActivity()).get(ProgressStateHolder::class.java)
-                .minTimestamp.postValue(minTimestamp)
+            val maxTimestamp =
+                filtered.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
+                    .date
             values = filtered
                 .map { m ->
                     Entry(
-                        (m.date - minTimestamp).toFloat(),
+                        ((m.date - minTimestamp) / (maxTimestamp - minTimestamp.toFloat())),
                         dpt(m.distanceMeters).toFloat(),
                         m
                     )

@@ -19,10 +19,6 @@ class ProgressStateHolder : ViewModel() {
         MutableLiveData<Measurement>()
     }
 
-    val minTimestamp: MutableLiveData<Long> by lazy {
-        MutableLiveData(0L)
-    }
-
     companion object {
         val initialModes = listOf(
             MeasurementMode.LEFT,
