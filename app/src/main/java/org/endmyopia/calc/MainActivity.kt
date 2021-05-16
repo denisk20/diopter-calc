@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 1) ?: 1]
+        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 0) ?: 0]
         startMenuItem.setChecked(true)
         onNavigationItemSelected(startMenuItem)
     }
