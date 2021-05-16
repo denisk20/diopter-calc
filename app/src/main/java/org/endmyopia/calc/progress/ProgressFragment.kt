@@ -207,15 +207,17 @@ class ProgressFragment : Fragment() {
 //                    Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
 //                )
 
-                val minTimestamp =
-                    measurements.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
-                        .date
-                val maxTimestamp =
-                    measurements.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
-                        .date
+                if (measurements.isNotEmpty()) {
+                    val minTimestamp =
+                        measurements.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
+                            .date
+                    val maxTimestamp =
+                        measurements.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
+                            .date
 
-                for (mode in ProgressStateHolder.initialModes) {
-                    createDataSet(measurements, mode, minTimestamp, maxTimestamp)
+                    for (mode in ProgressStateHolder.initialModes) {
+                        createDataSet(measurements, mode, minTimestamp, maxTimestamp)
+                    }
                 }
                 dataBinding.chart.notifyDataSetChanged()
             }
