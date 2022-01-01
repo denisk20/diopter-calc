@@ -10,10 +10,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.google.ar.core.AugmentedFace
-import com.google.ar.core.Config
+import com.google.ar.core.*
 import com.google.ar.core.Config.AugmentedFaceMode
-import com.google.ar.core.Session
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -72,6 +70,21 @@ class FaceArFragment : ArFragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setOnSessionConfigurationListener { session, config ->
+            run {
+                config.augmentedFaceMode = AugmentedFaceMode.MESH3D
+                val filter = CameraConfigFilter(session)
+                filter.facingDirection = CameraConfig.FacingDirection.FRONT
+                val supportedCameraConfigs = session.getSupportedCameraConfigs(filter)
+                if (supportedCameraConfigs != null && supportedCameraConfigs.size > 0) {
+                    session.cameraConfig = supportedCameraConfigs[0]
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         val holder: MeasureStateHolder =
@@ -80,16 +93,7 @@ class FaceArFragment : ArFragment() {
             arSceneView.pause()
         } else
             arSceneView.resume()
-    }
-
-    override fun getSessionConfiguration(session: Session): Config {
-        val config = Config(session)
-        config.augmentedFaceMode = AugmentedFaceMode.MESH3D
-        return config
-    }
-
-    override fun getSessionFeatures(): Set<Session.Feature> {
-        return EnumSet.of<Session.Feature>(Session.Feature.FRONT_CAMERA)
+        instructionsController.isEnabled = false
     }
 
     /**
@@ -102,9 +106,6 @@ class FaceArFragment : ArFragment() {
         val frameLayout =
             super.onCreateView(inflater, container, savedInstanceState) as FrameLayout?
 
-        planeDiscoveryController.hide()
-        planeDiscoveryController.setInstructionView(null)
-
         return frameLayout
     }
 
@@ -114,10 +115,9 @@ class FaceArFragment : ArFragment() {
 
     override fun onStart() {
         super.onStart()
-        debug("onStart===")
         // This is important to make sure that the camera stream renders first so that
         // the face mesh occlusion works correctly.
-        arSceneView.cameraStreamRenderPriority = Renderable.RENDER_PRIORITY_FIRST
+        arSceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST)
 
         val holder: MeasureStateHolder =
             ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
