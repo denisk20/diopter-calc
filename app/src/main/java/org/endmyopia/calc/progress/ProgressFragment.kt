@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.endmyopia.calc.R
@@ -40,6 +41,9 @@ class ProgressFragment : Fragment() {
         dataBinding = FragmentProgressBinding.bind(view)
         dataBinding.lifecycleOwner = this
         dataBinding.progressPager.adapter = PagerAdapter(this)
+        TabLayoutMediator(dataBinding.dots, dataBinding.progressPager) { tab, position ->
+            dataBinding.dots.selectTab(tab, true)
+        }.attach()
         with(dataBinding) {
 
             val holder: ProgressStateHolder =

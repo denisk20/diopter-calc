@@ -61,6 +61,19 @@
                     app:layout_constraintBottom_toTopOf="@+id/filters"
                     app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/dots"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/filters"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:tabBackground="@drawable/tab_indicator_default"
+                    app:tabIndicator="@drawable/tab_indicator_selected"
+                    app:tabIndicatorColor="@color/colorAccent"
+                    app:tabIndicatorGravity="center"
+                    app:tabIndicatorHeight="8dp" />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/delete"
                     android:layout_width="wrap_content"
