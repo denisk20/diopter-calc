@@ -54,11 +54,10 @@
                         android:textOff="@string/right_eye" />
             </LinearLayout>
 
-            <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart"
+            <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/progress_pager"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:background="@color/white"
                     app:layout_constraintBottom_toTopOf="@+id/filters"
                     app:layout_constraintTop_toTopOf="parent" />
 
