@@ -168,6 +168,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (count == 1)
                 finish()
             else {
+                val backStackEntryAt = supportFragmentManager.getBackStackEntryAt(count - 2)
+                nav_view.menu[
+                        when (backStackEntryAt.name) {
+                            R.id.measure.toString() -> 0
+                            R.id.progress.toString() -> 1
+                            R.id.settings.toString() -> 2
+                            R.id.help.toString() -> 3
+                            else -> throw IllegalArgumentException("Unknown prev. menu item ${backStackEntryAt.name}")
+                        }
+                ].setChecked(true)
                 super.onBackPressed()
             }
         }
@@ -213,7 +223,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 tag
             )
         }
-        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.addToBackStack(tag)
         fragmentTransaction.commit()
         drawer_layout.closeDrawer(GravityCompat.START)
 
