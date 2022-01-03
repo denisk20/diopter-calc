@@ -32,6 +32,7 @@ class ProgressFragment : Fragment() {
     private lateinit var dataBinding: FragmentProgressBinding
     private lateinit var deleteDialogBuilder: AlertDialog.Builder
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

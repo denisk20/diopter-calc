@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.forEachIndexed
 import androidx.core.view.get
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
 import com.google.gson.Gson
@@ -168,17 +169,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (count == 1)
                 finish()
             else {
-                val backStackEntryAt = supportFragmentManager.getBackStackEntryAt(count - 2)
-                nav_view.menu[
-                        when (backStackEntryAt.name) {
-                            R.id.measure.toString() -> 0
-                            R.id.progress.toString() -> 1
-                            R.id.settings.toString() -> 2
-                            R.id.help.toString() -> 3
-                            else -> throw IllegalArgumentException("Unknown prev. menu item ${backStackEntryAt.name}")
-                        }
-                ].setChecked(true)
-                super.onBackPressed()
+                val pager = findViewById<ViewPager2>(R.id.progress_pager)
+                if (pager != null && pager.currentItem > 0) {
+                    pager.currentItem = pager.currentItem - 1
+                } else {
+                    val backStackEntryAt = supportFragmentManager.getBackStackEntryAt(count - 2)
+                    nav_view.menu[
+                            when (backStackEntryAt.name) {
+                                R.id.measure.toString() -> 0
+                                R.id.progress.toString() -> 1
+                                R.id.settings.toString() -> 2
+                                R.id.help.toString() -> 3
+                                else -> throw IllegalArgumentException("Unknown prev. menu item ${backStackEntryAt.name}")
+                            }
+                    ].setChecked(true)
+                    super.onBackPressed()
+                }
             }
         }
     }
