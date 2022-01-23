@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -17,6 +16,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
+import org.endmyopia.calc.databinding.FragmentChartBinding
 import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getLabelRes
 
@@ -26,7 +26,7 @@ import org.endmyopia.calc.util.getLabelRes
  */
 class ChartFragment : Fragment() {
 
-    lateinit var chart: LineChart
+    private lateinit var dataBinding: FragmentChartBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,12 +36,13 @@ class ChartFragment : Fragment() {
         val holder: ProgressStateHolder =
             ViewModelProvider(requireActivity()).get(ProgressStateHolder::class.java)
 
-        val chart: LineChart =
-            inflater.inflate(R.layout.fragment_chart, container, false) as LineChart
+        val view =
+            inflater.inflate(R.layout.fragment_chart, container, false)
 
-        this.chart = chart
+        dataBinding = FragmentChartBinding.bind(view)
+        dataBinding.lifecycleOwner = this
 
-        with(chart) {
+        with(dataBinding.chart) {
             setOnChartValueSelectedListener(object :
                 OnChartValueSelectedListener {
                 override fun onNothingSelected() {
@@ -77,8 +78,8 @@ class ChartFragment : Fragment() {
                 context,
                 org.endmyopia.calc.R.layout.progress_popup
             )
-            markerView.chartView = chart
-            chart.marker = markerView
+            markerView.chartView = this
+            this.marker = markerView
 
             xAxis.setDrawGridLines(false)
             axisLeft.setDrawGridLines(false)
@@ -89,7 +90,7 @@ class ChartFragment : Fragment() {
             setDataSetVisible(MeasurementMode.LEFT, modes)
             setDataSetVisible(MeasurementMode.RIGHT, modes)
             setDataSetVisible(MeasurementMode.BOTH, modes)
-            chart.invalidate()
+            view.invalidate()
             Thread.sleep(300)
         })
 
@@ -102,15 +103,19 @@ class ChartFragment : Fragment() {
                     measurements.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
                         .date
 
-                chart.clear()
+                dataBinding.chart.clear()
                 for (mode in ProgressStateHolder.initialModes) {
                     createDataSet(measurements, mode, minTimestamp, maxTimestamp)
                 }
             }
-            chart.notifyDataSetChanged()
+            dataBinding.chart.notifyDataSetChanged()
 
         })
-        return chart
+
+        dataBinding.delete.setOnClickListener {
+            holder.showDeleteDialog(requireContext())
+        }
+        return view
     }
 
     private fun setDataSetVisible(mode: MeasurementMode, modes: List<MeasurementMode>) {
@@ -140,7 +145,7 @@ class ChartFragment : Fragment() {
         } else {
             values = emptyList()
         }
-        with(chart) {
+        with(dataBinding.chart) {
             if (data == null) {
                 data = LineData()
             }
@@ -164,7 +169,7 @@ class ChartFragment : Fragment() {
     }
 
     private fun getDataSet(mode: MeasurementMode): ILineDataSet? {
-        with(chart) {
+        with(dataBinding.chart) {
             if (data == null) {
                 data = LineData()
             }

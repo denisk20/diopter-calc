@@ -16,6 +16,9 @@
     <string name="left_eye">left eye</string>
     <string name="right_eye">right eye</string>
     <string name="both_eyes">both eyes</string>
+    <string name="left_eye_short">L</string>
+    <string name="right_eye_short">R</string>
+    <string name="both_eyes_short">BOTH</string>
     <string name="deleted">Measurement deleted</string>
     <string name="delete">Delete</string>
     <string name="delete_measurement">Delete measurement %s for %s?</string>
