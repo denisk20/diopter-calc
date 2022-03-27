@@ -55,7 +55,6 @@ class ProgressFragment : Fragment() {
     }
 
     private fun addFilterOnClickListener(button: ToggleButton, mode: MeasurementMode) {
-        button.isChecked = true
         button.setOnCheckedChangeListener { _, checked ->
             val result: ArrayList<MeasurementMode> = ArrayList(
                 holder.selectedModes.value ?: ArrayList<MeasurementMode>()

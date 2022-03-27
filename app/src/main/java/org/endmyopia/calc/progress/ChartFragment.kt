@@ -41,6 +41,7 @@ class ChartFragment : Fragment() {
 
         dataBinding = FragmentChartBinding.bind(view)
         dataBinding.lifecycleOwner = this
+        dataBinding.holder = holder
 
         with(dataBinding.chart) {
             setOnChartValueSelectedListener(object :
@@ -90,7 +91,7 @@ class ChartFragment : Fragment() {
             setDataSetVisible(MeasurementMode.LEFT, modes)
             setDataSetVisible(MeasurementMode.RIGHT, modes)
             setDataSetVisible(MeasurementMode.BOTH, modes)
-            view.invalidate()
+            dataBinding.chart.invalidate()
             Thread.sleep(300)
         })
 
@@ -113,7 +114,9 @@ class ChartFragment : Fragment() {
         })
 
         dataBinding.delete.setOnClickListener {
-            holder.showDeleteDialog(requireContext())
+            holder.selectedValue.value?.let {
+                holder.showDeleteDialog(requireContext(), it)
+            }
         }
         return view
     }
@@ -130,7 +133,7 @@ class ChartFragment : Fragment() {
         maxTimestamp: Long
     ) {
         val label = getString(mode.getLabelRes())
-        val filtered = measurements.filter { m -> m.mode == mode }
+        val filtered = measurements.filter { m -> m.mode == mode }.reversed()
         lateinit var values: List<Entry>
 
         if (filtered.isNotEmpty()) {

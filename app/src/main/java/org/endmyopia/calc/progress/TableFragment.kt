@@ -16,6 +16,7 @@ import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentTableBinding
 import org.endmyopia.calc.measure.MeasureStateHolder
+import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.dpt
 import java.text.DateFormat
 
@@ -34,11 +35,10 @@ class TableFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_table, container, false)
-        tableBinding = FragmentTableBinding.bind(view)
-        tableBinding.lifecycleOwner = this
-
         val holder: ProgressStateHolder =
             ViewModelProvider(requireActivity()).get(ProgressStateHolder::class.java)
+        tableBinding = FragmentTableBinding.bind(view)
+        tableBinding.lifecycleOwner = this
 
         adapter = MeasurementAdapter(
             android.text.format.DateFormat.getDateFormat(context),
@@ -47,6 +47,14 @@ class TableFragment : Fragment() {
         )
         holder.data.observe(viewLifecycleOwner, { measurements ->
             adapter.dataSet = measurements
+            adapter.notifyDataSetChanged()
+        })
+
+        holder.selectedModes.observe(viewLifecycleOwner, { modes ->
+            val filteredMeasurements = holder.data.value?.filter { m ->
+                modes.contains(m.mode)
+            }.orEmpty()
+            adapter.dataSet = filteredMeasurements
             adapter.notifyDataSetChanged()
         })
 
@@ -89,8 +97,9 @@ class MeasurementAdapter(
         val viewHolder = ViewHolder(view)
         viewHolder.delete.setOnClickListener { v ->
             run {
+                debug(v.tag.toString())
                 holder.selectedValue.postValue(v.tag as Measurement)
-                holder.showDeleteDialog(viewGroup.context)
+                holder.showDeleteDialog(viewGroup.context, v.tag as Measurement)
             }
         }
         return viewHolder

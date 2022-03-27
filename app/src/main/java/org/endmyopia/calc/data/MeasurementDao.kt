@@ -19,6 +19,6 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements")
     fun deleteAll()
 
-    @Query("SELECT * FROM measurements where mode IN (:modes) ORDER BY date")
+    @Query("SELECT * FROM measurements where mode IN (:modes) ORDER BY date DESC")
     fun getMeasurements(modes: List<MeasurementMode>): List<Measurement>
 }

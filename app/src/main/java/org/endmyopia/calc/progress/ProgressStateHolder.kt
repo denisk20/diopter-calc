@@ -66,18 +66,17 @@ class ProgressStateHolder : ViewModel() {
         }
     }
 
-    fun showDeleteDialog(context: Context) {
-        selectedValue.value?.let {
-            val deleteDialogBuilder = AlertDialog.Builder(context)
-            deleteDialogBuilder
-                .setTitle(
-                    context.getString(
-                        R.string.delete_measurement,
-                        MeasureStateHolder.formatDiopt.format(dpt(it.distanceMeters)),
-                        getEyesText(it.mode, context)
-                    )
+    fun showDeleteDialog(context: Context, measurement: Measurement) {
+        val deleteDialogBuilder = AlertDialog.Builder(context)
+        deleteDialogBuilder
+            .setTitle(
+                context.getString(
+                    R.string.delete_measurement,
+                    MeasureStateHolder.formatDiopt.format(dpt(measurement.distanceMeters)),
+                    getEyesText(measurement.mode, context)
                 )
-                .setPositiveButton(
+            )
+            .setPositiveButton(
                     R.string.yes
                 ) { _, i ->
                     selectedValue.value?.let { measurement ->
@@ -92,7 +91,6 @@ class ProgressStateHolder : ViewModel() {
                 }
                 .setNegativeButton(R.string.no) { _, i -> selectedValue.postValue(null) }
                 .create().show()
-        }
 
     }
 

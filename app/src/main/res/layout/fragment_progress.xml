@@ -30,20 +30,23 @@
                         android:id="@+id/filterLeft"
                         style="@style/FilterButton"
                         android:textOn="@string/left_eye"
-                        android:textOff="@string/left_eye" />
+                        android:textOff="@string/left_eye"
+                        android:checked="true" />
 
                 <ToggleButton
                         android:id="@+id/filterBoth"
                         style="@style/FilterButton"
                         android:background="@drawable/filter_button_background_full_border"
                         android:textOn="@string/both_eyes"
-                        android:textOff="@string/both_eyes" />
+                        android:textOff="@string/both_eyes"
+                        android:checked="true" />
 
                 <ToggleButton
                         android:id="@+id/filterRight"
                         style="@style/FilterButton"
                         android:textOn="@string/right_eye"
-                        android:textOff="@string/right_eye" />
+                        android:textOff="@string/right_eye"
+                        android:checked="true" />
             </LinearLayout>
 
             <androidx.viewpager2.widget.ViewPager2
