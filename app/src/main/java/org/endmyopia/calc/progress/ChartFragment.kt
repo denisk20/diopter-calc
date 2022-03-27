@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -58,15 +59,13 @@ class ChartFragment : Fragment() {
 
             description.text = ""
 
-            val yValueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(
-                    value: Float
-                ): String {
+            val yFormatter = object : IAxisValueFormatter {
+                override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                     return org.endmyopia.calc.measure.MeasureStateHolder.formatDiopt.format(value)
                 }
             }
-            axisLeft.valueFormatter = yValueFormatter
-            axisRight.valueFormatter = yValueFormatter
+            axisLeft.valueFormatter = yFormatter
+            axisRight.valueFormatter = yFormatter
 
             val spaceTop = 20f
             axisLeft.spaceTop = spaceTop
