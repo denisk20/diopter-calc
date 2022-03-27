@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import org.endmyopia.calc.R
@@ -24,6 +26,8 @@ class ProgressFragment : Fragment() {
     private lateinit var dataBinding: FragmentProgressBinding
 
     private lateinit var holder: ProgressStateHolder
+
+    val SWIPE_TIP_SHOWN = "SWIPE_TIP_SHOWN"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +55,19 @@ class ProgressFragment : Fragment() {
             addFilterOnClickListener(filterRight, MeasurementMode.RIGHT)
         }
 
+        showSwipeTip()
+
         return view
+    }
+
+    private fun showSwipeTip() {
+        if (!PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getBoolean(SWIPE_TIP_SHOWN, false)
+        ) {
+            Toast.makeText(context, R.string.progress_swipe_tip, Toast.LENGTH_LONG).show()
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit()
+                .putBoolean(SWIPE_TIP_SHOWN, true).apply()
+        }
     }
 
     private fun addFilterOnClickListener(button: ToggleButton, mode: MeasurementMode) {

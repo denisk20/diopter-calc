@@ -33,6 +33,7 @@
     <string name="change_color_hint">You can tap on the focus text to change its color</string>
     <string name="info">Useful tips</string>
     <string name="cover_nose_tip">Pro Tip: You can cover your nose to take a measurement without pressing a button</string>
+    <string name="progress_swipe_tip">Swipe left for the table view</string>
     <string name="export_summary">Export your progress as a em.json file</string>
     <string name="export">Export</string>
     <string name="sharing_progress">Progress as for %s</string>
