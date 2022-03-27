@@ -18,6 +18,7 @@ import androidx.core.view.get
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
+import com.google.ar.sceneform.Sceneform
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -269,6 +270,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Toast.makeText(activity, "Sceneform requires OpenGL ES 3.0 or later", Toast.LENGTH_LONG)
                 .show()
             activity.finish()
+            return false
+        }
+        if (!Sceneform.isSupported(this)) {
             return false
         }
         return true
