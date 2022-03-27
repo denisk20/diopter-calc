@@ -146,11 +146,11 @@ class MeasureFragment : Fragment() {
     }
 
     private fun showProTip() {
-        if (!PreferenceManager.getDefaultSharedPreferences(context)
+        if (!PreferenceManager.getDefaultSharedPreferences(requireContext())
                 .getBoolean(COVER_NOSE_TIP_SHOWN, false)
         ) {
             Toast.makeText(context, R.string.cover_nose_tip, Toast.LENGTH_LONG).show()
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit()
                 .putBoolean(COVER_NOSE_TIP_SHOWN, true).apply()
         }
     }

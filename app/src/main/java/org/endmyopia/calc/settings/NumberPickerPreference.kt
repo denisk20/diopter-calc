@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.preference.DialogPreference
 import org.endmyopia.calc.R
 
-class NumberPickerPreference(context: Context?, attrs: AttributeSet?) :
+class NumberPickerPreference(context: Context, attrs: AttributeSet?) :
     DialogPreference(context, attrs) {
 
     override fun getSummary(): CharSequence {
