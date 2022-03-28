@@ -34,7 +34,7 @@
                 android:gravity="center"
                     android:text="@{holder.hasTakenMeasurement ? @string/measurement_taken(holder.eyesString()) : holder.focusText}"
                     android:textColor="@{holder.hasTakenMeasurement ? @color/colorPrimaryDark : holder.uiState.fontColor}"
-                    android:textSize="@{holder.hasTakenMeasurement ? 30 : holder.fontSize}"
+                    android:textSize="@{holder.hasTakenMeasurement ? 30f : holder.fontSize}"
                     android:background="@{holder.hasTakenMeasurement ? @color/white : holder.uiState.backgroundColor}"
                     android:onClick="@{holder.hasTakenMeasurement ? null : holder.toggleStyle}"
                 app:layout_constraintEnd_toEndOf="parent"

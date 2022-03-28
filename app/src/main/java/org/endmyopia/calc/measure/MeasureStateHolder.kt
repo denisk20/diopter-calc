@@ -28,7 +28,7 @@ import java.text.DecimalFormat
  * @since 2019-04-29.
  */
 class MeasureStateHolder(private val app: Application) : AndroidViewModel(app) {
-    val EYES_LOW = 76
+    val EYES_LOW = 106
     val EYES_HIGH = 128
 
     val distanceMetersVal: MutableLiveData<Double> by lazy {
