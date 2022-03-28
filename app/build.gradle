@@ -16,7 +16,7 @@ android {
         applicationId "org.endmyopia.calc"
         minSdkVersion 24
         targetSdkVersion 29
-        versionName '1.0.1'
+        versionName '1.1.0'
         versionCode Integer.parseInt(getBuildNumberFile().text)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
