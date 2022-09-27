@@ -45,7 +45,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val json = gson.toJson(measurements)
         val outputDir: File = requireContext().cacheDir // context being the Activity pointer
         val date: String = simpleDateFormat.format(Date())
-        val outputFile: File = File.createTempFile(date + '_', ".endmyopia.json", outputDir)
+        val outputFile: File = File.createTempFile(date + '_', ".emjson", outputDir)
 
         outputFile.writeText(json)
 
