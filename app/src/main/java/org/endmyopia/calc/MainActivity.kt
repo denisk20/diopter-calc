@@ -24,12 +24,9 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.help.HelpFragment
@@ -237,9 +234,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    @OptIn(ObsoleteCoroutinesApi::class)
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            volumePressedEvent.offer(Unit)
+            volumePressedEvent.trySend(Unit)
         }
         return true
     }
