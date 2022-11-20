@@ -76,7 +76,7 @@ class ChartFragment : Fragment() {
 
             val markerView = ProgressMarkerView(
                 context,
-                org.endmyopia.calc.R.layout.progress_popup
+                R.layout.progress_popup
             )
             markerView.chartView = this
             this.marker = markerView
@@ -86,15 +86,15 @@ class ChartFragment : Fragment() {
             axisRight.setDrawGridLines(false)
         }
 
-        holder.selectedModes.observe(viewLifecycleOwner, { modes ->
+        holder.selectedModes.observe(viewLifecycleOwner) { modes ->
             setDataSetVisible(MeasurementMode.LEFT, modes)
             setDataSetVisible(MeasurementMode.RIGHT, modes)
             setDataSetVisible(MeasurementMode.BOTH, modes)
             dataBinding.chart.invalidate()
             Thread.sleep(300)
-        })
+        }
 
-        holder.data.observe(viewLifecycleOwner, { measurements ->
+        holder.data.observe(viewLifecycleOwner) { measurements ->
             if (measurements.isNotEmpty()) {
                 val minTimestamp =
                     measurements.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
@@ -107,10 +107,11 @@ class ChartFragment : Fragment() {
                 for (mode in ProgressStateHolder.initialModes) {
                     createDataSet(measurements, mode, minTimestamp, maxTimestamp)
                 }
+            } else {
+                dataBinding.chart.clear()
             }
             dataBinding.chart.notifyDataSetChanged()
-
-        })
+        }
 
         dataBinding.delete.setOnClickListener {
             holder.selectedValue.value?.let {
@@ -133,10 +134,9 @@ class ChartFragment : Fragment() {
     ) {
         val label = getString(mode.getLabelRes())
         val filtered = measurements.filter { m -> m.mode == mode }.reversed()
-        lateinit var values: List<Entry>
 
-        if (filtered.isNotEmpty()) {
-            values = filtered
+        var values: List<Entry> = if (filtered.isNotEmpty()) {
+            filtered
                 .map { m ->
                     Entry(
                         if (minTimestamp == maxTimestamp) 0f else ((m.date - minTimestamp).toFloat() / (maxTimestamp - minTimestamp)),
@@ -145,7 +145,7 @@ class ChartFragment : Fragment() {
                     )
                 }
         } else {
-            values = emptyList()
+            emptyList()
         }
         with(dataBinding.chart) {
             if (data == null) {
@@ -153,7 +153,7 @@ class ChartFragment : Fragment() {
             }
             val dataSetByLabel = data.getDataSetByLabel(label, false)
             if (dataSetByLabel is LineDataSet) {
-                dataSetByLabel.values = values
+                dataSetByLabel.entries = values
             } else {
                 val dataSet = LineDataSet(values, label)
                 dataSet.lineWidth = 3f
