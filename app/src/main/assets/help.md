@@ -38,9 +38,9 @@ text file). You can save it locally or upload to google drive, add to saved Tele
 
 In order to import you progress you need to open the saved file (which has "endmyopia.json"
 extension) on your device. This should automatically open the app and prompt to import the progress.
-If for some reason it doesn't work, try opening from a different source (Telegram saved messages,
-gmail attachment etc.). **WARNING** this will overwrite all your existing measurements and can't be
-undone.
+If it doesn't work, try opening from a different source (Telegram saved messages, gmail attachment
+etc.). You can also try to SHARE the *.endmyopia.json file and select the Diopter Calculator as a
+destination. **WARNING** this will overwrite all your existing measurements and can't be undone.
 
 # Settings
 
