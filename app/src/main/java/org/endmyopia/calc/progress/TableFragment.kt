@@ -45,18 +45,18 @@ class TableFragment : Fragment() {
             android.text.format.DateFormat.getTimeFormat(context),
             holder
         )
-        holder.data.observe(viewLifecycleOwner, { measurements ->
+        holder.data.observe(viewLifecycleOwner) { measurements ->
             adapter.dataSet = measurements
             adapter.notifyDataSetChanged()
-        })
+        }
 
-        holder.selectedModes.observe(viewLifecycleOwner, { modes ->
+        holder.selectedModes.observe(viewLifecycleOwner) { modes ->
             val filteredMeasurements = holder.data.value?.filter { m ->
                 modes.contains(m.mode)
             }.orEmpty()
             adapter.dataSet = filteredMeasurements
             adapter.notifyDataSetChanged()
-        })
+        }
 
         tableBinding.table.adapter = adapter
         tableBinding.table.layoutManager =

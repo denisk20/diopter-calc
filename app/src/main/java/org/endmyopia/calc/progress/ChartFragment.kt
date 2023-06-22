@@ -20,12 +20,16 @@ import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentChartBinding
 import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getLabelRes
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * @author denisk
  * @since 01.01.2022.
  */
 class ChartFragment : Fragment() {
+
+    val maxPoints = 5
 
     private lateinit var dataBinding: FragmentChartBinding
 
@@ -96,16 +100,37 @@ class ChartFragment : Fragment() {
 
         holder.data.observe(viewLifecycleOwner) { measurements ->
             if (measurements.isNotEmpty()) {
-                val minTimestamp =
-                    measurements.reduce { acc, measurement -> if (measurement.date < acc.date) measurement else acc }
-                        .date
-                val maxTimestamp =
-                    measurements.reduce { acc, measurement -> if (measurement.date > acc.date) measurement else acc }
-                        .date
+                var minTimestamp = Long.MAX_VALUE
+                var maxTimestamp = 0L
+
+                measurements.forEach {
+                    if (minTimestamp > it.date) minTimestamp = it.date
+                    if (maxTimestamp < it.date) maxTimestamp = it.date
+                }
+                val map = measurements?.groupBy { it.mode }
 
                 dataBinding.chart.clear()
                 for (mode in ProgressStateHolder.initialModes) {
-                    createDataSet(measurements, mode, minTimestamp, maxTimestamp)
+                    val measurementsForMode = map?.getOrDefault(mode, listOf()).orEmpty()
+                    var meas = measurementsForMode
+                    if (measurementsForMode.size > maxPoints) {
+                        val groupSize = ceil(measurementsForMode.size / maxPoints.toFloat()).toInt()
+                        val groupsCount =
+                            floor(measurementsForMode.size / groupSize.toFloat()).toInt()
+                        val avgMeasurements = mutableListOf<Measurement>()
+                        for (i in measurementsForMode.indices step groupSize) {
+                            val subList = measurementsForMode.subList(i, i + groupSize)
+                            val avgDate = subList.map { it.date }.average().toLong()
+                            val avgDistance = subList.map { it.distanceMeters }.average()
+                            val measurement = Measurement(0, mode, avgDate, avgDistance, 0.0)
+                            avgMeasurements.add(measurement)
+                        }
+                        for (i in groupSize * groupsCount until measurementsForMode.size) {
+                            avgMeasurements.add(measurementsForMode[i])
+                        }
+                        meas = avgMeasurements
+                    }
+                    createDataSet(meas, mode, minTimestamp, maxTimestamp)
                 }
             } else {
                 dataBinding.chart.clear()
@@ -133,7 +158,7 @@ class ChartFragment : Fragment() {
         maxTimestamp: Long
     ) {
         val label = getString(mode.getLabelRes())
-        val filtered = measurements.filter { m -> m.mode == mode }.reversed()
+        val filtered = measurements.reversed()
 
         var values: List<Entry> = if (filtered.isNotEmpty()) {
             filtered
