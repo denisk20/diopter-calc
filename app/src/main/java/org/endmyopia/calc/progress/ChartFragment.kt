@@ -6,20 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentChartBinding
 import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getLabelRes
+import java.util.AbstractMap.SimpleEntry
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -49,45 +42,7 @@ class ChartFragment : Fragment() {
         dataBinding.holder = holder
 
         with(dataBinding.chart) {
-            setOnChartValueSelectedListener(object :
-                OnChartValueSelectedListener {
-                override fun onNothingSelected() {
-                    holder.selectedValue.postValue(null)
-                }
 
-                override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    holder.selectedValue.postValue(e?.data as Measurement?)
-                }
-            })
-            xAxis.isEnabled = false
-
-            description.text = ""
-
-            val yFormatter = object : IAxisValueFormatter {
-                override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                    return org.endmyopia.calc.measure.MeasureStateHolder.formatDiopt.format(value)
-                }
-            }
-            axisLeft.valueFormatter = yFormatter
-            axisRight.valueFormatter = yFormatter
-
-            val spaceTop = 20f
-            axisLeft.spaceTop = spaceTop
-            axisRight.spaceTop = spaceTop
-
-            axisLeft.setDrawTopYLabelEntry(false)
-            axisRight.setDrawTopYLabelEntry(false)
-
-            val markerView = ProgressMarkerView(
-                context,
-                R.layout.progress_popup
-            )
-            markerView.chartView = this
-            this.marker = markerView
-
-            xAxis.setDrawGridLines(false)
-            axisLeft.setDrawGridLines(false)
-            axisRight.setDrawGridLines(false)
         }
 
         holder.selectedModes.observe(viewLifecycleOwner) { modes ->
@@ -109,7 +64,7 @@ class ChartFragment : Fragment() {
                 }
                 val map = measurements?.groupBy { it.mode }
 
-                dataBinding.chart.clear()
+                //dataBinding.chart.clear()
                 for (mode in ProgressStateHolder.initialModes) {
                     val measurementsForMode = map?.getOrDefault(mode, listOf()).orEmpty()
                     var meas = measurementsForMode
@@ -133,21 +88,16 @@ class ChartFragment : Fragment() {
                     createDataSet(meas, mode, minTimestamp, maxTimestamp)
                 }
             } else {
-                dataBinding.chart.clear()
+                //dataBinding.chart.clear()
             }
-            dataBinding.chart.notifyDataSetChanged()
+            //dataBinding.chart.notifyDataSetChanged()
         }
 
-        dataBinding.delete.setOnClickListener {
-            holder.selectedValue.value?.let {
-                holder.showDeleteDialog(requireContext(), it)
-            }
-        }
         return view
     }
 
     private fun setDataSetVisible(mode: MeasurementMode, modes: List<MeasurementMode>) {
-        getDataSet(mode)?.isVisible = modes.contains(mode)
+        //getDataSet(mode)?.isVisible = modes.contains(mode)
     }
 
 
@@ -160,49 +110,18 @@ class ChartFragment : Fragment() {
         val label = getString(mode.getLabelRes())
         val filtered = measurements.reversed()
 
-        var values: List<Entry> = if (filtered.isNotEmpty()) {
+        var values: List<SimpleEntry<Float, Float>> = if (filtered.isNotEmpty()) {
             filtered
                 .map { m ->
-                    Entry(
+                    SimpleEntry<Float, Float>(
                         if (minTimestamp == maxTimestamp) 0f else ((m.date - minTimestamp).toFloat() / (maxTimestamp - minTimestamp)),
-                        dpt(m.distanceMeters).toFloat(),
-                        m
+                        dpt(m.distanceMeters).toFloat()
                     )
                 }
         } else {
             emptyList()
         }
         with(dataBinding.chart) {
-            if (data == null) {
-                data = LineData()
-            }
-            val dataSetByLabel = data.getDataSetByLabel(label, false)
-            if (dataSetByLabel is LineDataSet) {
-                dataSetByLabel.entries = values
-            } else {
-                val dataSet = LineDataSet(values, label)
-                dataSet.lineWidth = 3f
-                dataSet.color = when (mode) {
-                    MeasurementMode.LEFT -> android.graphics.Color.BLUE
-                    MeasurementMode.RIGHT -> android.graphics.Color.RED
-                    MeasurementMode.BOTH -> android.graphics.Color.GREEN
-                }
-                dataSet.circleRadius = 7f
-                dataSet.setCircleColor(dataSet.color)
-
-                data.addDataSet(dataSet)
-            }
         }
     }
-
-    private fun getDataSet(mode: MeasurementMode): ILineDataSet? {
-        with(dataBinding.chart) {
-            if (data == null) {
-                data = LineData()
-            }
-            val label = getString(mode.getLabelRes())
-            return data.getDataSetByLabel(label, false)
-        }
-    }
-
 }
