@@ -48,12 +48,12 @@ class ProgressStateHolder : ViewModel() {
                 Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
                 Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
 
-                Measurement(1, MeasurementMode.LEFT, 1582520776860, 0.5),
-                Measurement(2, MeasurementMode.LEFT, 1582520777860, 0.61),
-                Measurement(3, MeasurementMode.LEFT, 1582520779860, 0.63),
-                Measurement(4, MeasurementMode.LEFT, 1582520796860, 0.60),
-                Measurement(5, MeasurementMode.LEFT, 1582520974860, 0.65),
-                Measurement(5, MeasurementMode.LEFT, 1582520977860, 0.82),
+                Measurement(1, MeasurementMode.LEFT, 1582520770860, 0.5),
+                Measurement(2, MeasurementMode.LEFT, 1582520772860, 0.61),
+                Measurement(3, MeasurementMode.LEFT, 1582520773860, 0.63),
+                Measurement(4, MeasurementMode.LEFT, 1582520774860, 0.60),
+                Measurement(5, MeasurementMode.LEFT, 1582520775860, 0.65),
+                Measurement(5, MeasurementMode.LEFT, 1582520777860, 0.82),
 
                 Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
                 Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),

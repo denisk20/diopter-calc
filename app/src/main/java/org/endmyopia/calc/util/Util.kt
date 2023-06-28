@@ -38,3 +38,9 @@ fun getEyesText(mode: MeasurementMode, context: Context): String {
 }
 
 fun dpt(meters: Double) = -1 / meters
+
+fun interpolate(xMin: Float, xMax: Float, width: Int, xIn: Float) =
+    width * (xIn - xMin) / (xMax - xMin)
+
+fun interpolate(xMin: Long, xMax: Long, width: Int, xIn: Long) =
+    width * (xIn - xMin + 0f) / (xMax - xMin)
