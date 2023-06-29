@@ -12,9 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.forEachIndexed
 import androidx.core.view.get
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import com.google.ar.core.ArCoreApk
@@ -22,8 +24,6 @@ import com.google.ar.sceneform.Sceneform
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -40,6 +40,9 @@ import java.lang.reflect.Type
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     val volumePressedEvent = BroadcastChannel<Unit>(BUFFERED)
+
+    lateinit var drawerLayout: DrawerLayout
+    lateinit var navView: NavigationView
 
     fun <T> getListS(
         jsonArray: String?,
@@ -69,22 +72,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
         val toggle = ActionBarDrawerToggle(
             this,
-            drawer_layout,
+            drawerLayout,
             toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-        drawer_layout.addDrawerListener(toggle)
+        drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+        navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
 
-        val startMenuItem = nav_view.menu[savedInstanceState?.getInt(MENU_ITEM, 0) ?: 1]
-        startMenuItem.setChecked(true)
+        val startMenuItem = navView.menu[savedInstanceState?.getInt(MENU_ITEM, 0) ?: 1]
+        startMenuItem.isChecked = true
         onNavigationItemSelected(startMenuItem)
     }
 
@@ -150,7 +156,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         var index = 0
-        nav_view.menu.forEachIndexed { theIndex, theItem ->
+        navView.menu.forEachIndexed { theIndex, theItem ->
             if (theItem.isChecked) {
                 index = theIndex
             }
@@ -160,8 +166,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             val count = supportFragmentManager.backStackEntryCount
             if (count == 1)
@@ -172,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     pager.currentItem = pager.currentItem - 1
                 } else {
                     val backStackEntryAt = supportFragmentManager.getBackStackEntryAt(count - 2)
-                    nav_view.menu[
+                    navView.menu[
                             when (backStackEntryAt.name) {
                                 R.id.measure.toString() -> 0
                                 R.id.progress.toString() -> 1
@@ -229,7 +235,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         fragmentTransaction.addToBackStack(tag)
         fragmentTransaction.commit()
-        drawer_layout.closeDrawer(GravityCompat.START)
+        drawerLayout.closeDrawer(GravityCompat.START)
 
         return true
     }

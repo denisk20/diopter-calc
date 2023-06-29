@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
-import kotlinx.android.synthetic.main.fragment_measure.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
@@ -63,30 +62,30 @@ class MeasureFragment : Fragment() {
         super.onStart()
         mediaPlayer = MediaPlayer.create(context, R.raw.dingaling)
 
-        camera.setOnClickListener {
+        dataBinding.camera.setOnClickListener {
             if (dataBinding.holder?.hasTakenMeasurement?.value!!)
                 dataBinding.holder?.hasTakenMeasurement?.postValue(false)
             else
                 takeMeasurement()
         }
 
-        delete.setOnClickListener {
+        dataBinding.delete.setOnClickListener {
             deleteMeasurement()
         }
 
-        leftEye.setOnClickListener(
+        dataBinding.leftEye.setOnClickListener(
             getEyeModeChangeFn(
                 MeasurementMode.LEFT,
                 R.string.left_eye
             )
         )
-        rightEye.setOnClickListener(
+        dataBinding.rightEye.setOnClickListener(
             getEyeModeChangeFn(
                 MeasurementMode.RIGHT,
                 R.string.right_eye
             )
         )
-        bothEyes.setOnClickListener(
+        dataBinding.bothEyes.setOnClickListener(
             getEyeModeChangeFn(
                 MeasurementMode.BOTH,
                 R.string.both_eyes
