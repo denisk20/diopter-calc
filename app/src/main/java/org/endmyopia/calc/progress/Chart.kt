@@ -10,9 +10,13 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
+import org.endmyopia.calc.measure.MeasureStateHolder
 import org.endmyopia.calc.util.debug
+import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getColorRes
 import org.endmyopia.calc.util.interpolate
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 /**
@@ -29,6 +33,11 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     private var marginPx = 0
     private var offset = 0f
 
+    private val labelOffsetDp = 5f
+    private var labelOffsetPx = 0f
+
+    private val textSizeSp = 16f
+
     private var minTimestamp = 0L
     private var maxTimestamp = 0L
 
@@ -44,6 +53,11 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     private val allModesToXYs: MutableMap<MeasurementMode, FloatArray> = mutableMapOf()
     private var savedWidth = 0
     private var savedHeight = 0
+
+    private var minDioptLabel = ""
+    private var maxDioptLabel = ""
+    private var minTimestampLabel = ""
+    private var maxTimestampLabel = ""
 
     init {
         holder.addCallback(this)
@@ -62,11 +76,23 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
             marginDp,
             resources.displayMetrics
         )
+
+        labelOffsetPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            labelOffsetDp,
+            resources.displayMetrics
+        )
+
         marginPx = marg.roundToInt()
         offset = marg / 2
 
         paint.strokeWidth = lineWidthDp
         paint.style = Paint.Style.FILL_AND_STROKE
+        paint.textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            textSizeSp,
+            resources.displayMetrics
+        )
     }
 
     fun updateMeasurementCoords(measurements: List<Measurement>) {
@@ -84,6 +110,12 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
             if (minDist > it.distanceMeters) minDist = it.distanceMeters.toFloat()
             if (maxDist < it.distanceMeters) maxDist = it.distanceMeters.toFloat()
         }
+
+        maxDioptLabel = MeasureStateHolder.formatDiopt.format(dpt(maxDist.toDouble()))
+        minDioptLabel = MeasureStateHolder.formatDiopt.format(dpt(minDist.toDouble()))
+        minTimestampLabel = SimpleDateFormat.getDateInstance().format(Date(minTimestamp))
+        maxTimestampLabel = SimpleDateFormat.getDateInstance().format(Date(maxTimestamp))
+
         val allModeToMeasurementsMap = measurements.groupBy { it.mode }
         allModesToXYs.clear()
         MeasurementMode.values().forEach { mode ->
@@ -125,6 +157,37 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
                 canvas.drawPath(path, paint)
             }
         }
+
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+
+        canvas.drawText(
+            maxDioptLabel,
+            savedWidth - marginPx * 2f,
+            marginPx * 1f,
+            paint
+        )
+        canvas.drawText(
+            minDioptLabel,
+            savedWidth - marginPx * 2f,
+            savedHeight.toFloat() + marginPx,
+            paint
+        )
+
+        canvas.drawText(
+            minTimestampLabel,
+            labelOffsetPx,
+            savedHeight.toFloat() + marginPx * 2 - labelOffsetPx,
+            paint
+        )
+        canvas.drawText(
+            maxTimestampLabel,
+            savedWidth - marginPx * 2f - labelOffsetPx,
+            savedHeight.toFloat() + marginPx * 2 - labelOffsetPx,
+            paint
+        )
+        paint.style = Paint.Style.FILL_AND_STROKE
+
         holder.unlockCanvasAndPost(canvas)
         debug("rendered")
     }
@@ -157,7 +220,7 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
         if (width > 0 && height > 0) {
             if (width != savedWidth || height != savedHeight) {
                 savedWidth = width - marginPx
-                savedHeight = height - marginPx
+                savedHeight = height - marginPx * 2
                 updateMeasurementCoords(allMeasurements)
             }
         }
