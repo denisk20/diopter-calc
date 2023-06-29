@@ -13,6 +13,7 @@ import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.getColorRes
 import org.endmyopia.calc.util.interpolate
+import kotlin.math.roundToInt
 
 /**
  * @author denisk
@@ -20,10 +21,13 @@ import org.endmyopia.calc.util.interpolate
  */
 class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attrs),
     SurfaceHolder.Callback {
-    private val circleRadiusDp = 5f
+    private val circleRadiusDp = 8f
     private var circleRadiusPx = 0f
     private val lineWidthDp = 5f
     private var lineWidthPx = 0f
+    private val marginDp = 30f
+    private var marginPx = 0
+    private var offset = 0f
 
     private var minTimestamp = 0L
     private var maxTimestamp = 0L
@@ -53,6 +57,13 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
             lineWidthDp,
             resources.displayMetrics
         )
+        val marg = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            marginDp,
+            resources.displayMetrics
+        )
+        marginPx = marg.roundToInt()
+        offset = marg / 2
 
         paint.strokeWidth = lineWidthDp
         paint.style = Paint.Style.FILL_AND_STROKE
@@ -121,8 +132,14 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     private fun getXYs(measurements: List<Measurement>): FloatArray {
         val xYs = FloatArray(measurements.size * 2)
         measurements.forEachIndexed { index, measurement ->
-            val x = interpolate(minTimestamp, maxTimestamp, savedWidth, measurement.date)
-            val y = interpolate(minDist, maxDist, savedHeight, measurement.distanceMeters.toFloat())
+            val x = interpolate(minTimestamp, maxTimestamp, savedWidth, measurement.date, offset)
+            val y = interpolate(
+                minDist,
+                maxDist,
+                savedHeight,
+                measurement.distanceMeters.toFloat(),
+                -offset
+            )
 
             debug("getting xy index $index date: ${measurement.date} date.toFloat: ${measurement.date.toFloat()} x: $x")
 
@@ -139,8 +156,8 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     override fun surfaceChanged(holder: SurfaceHolder, m: Int, width: Int, height: Int) {
         if (width > 0 && height > 0) {
             if (width != savedWidth || height != savedHeight) {
-                savedWidth = width
-                savedHeight = height
+                savedWidth = width - marginPx
+                savedHeight = height - marginPx
                 updateMeasurementCoords(allMeasurements)
             }
         }

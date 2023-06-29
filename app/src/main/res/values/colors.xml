@@ -11,8 +11,13 @@
     <color name="gray">#E2E2E2</color>
 
     <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
 
-    <color name="both">#FF8C00</color>
-    <color name="left">#00A6FF</color>
-    <color name="right">#FAE000</color>
+    <color name="left">@color/colorPrimary</color>
+    <color name="right">@color/green</color>
+    <color name="both">@color/colorAccent</color>
+
+    <color name="leftTransparent50">@color/colorPrimaryTransparent50</color>
+    <color name="rightTransparent50">#3300FF00</color>
+    <color name="bothTransparent50">#33D81B60</color>
 </resources>
