@@ -117,6 +117,16 @@ class MeasurementAdapter(
                 MeasurementMode.BOTH -> R.string.both_eyes_short
             }
         )
+        viewHolder.type.setBackgroundColor(
+            viewHolder.context.getColor(
+                when (measurement.mode) {
+                    MeasurementMode.LEFT -> R.color.leftTransparent50
+                    MeasurementMode.BOTH -> R.color.bothTransparent50
+                    MeasurementMode.RIGHT -> R.color.rightTransparent50
+                }
+            )
+        )
+
         viewHolder.value.text =
             MeasureStateHolder.formatDiopt.format(dpt(measurement.distanceMeters))
         viewHolder.delete.tag = measurement

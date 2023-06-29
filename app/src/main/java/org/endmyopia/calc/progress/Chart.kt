@@ -11,7 +11,6 @@ import android.view.SurfaceView
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.measure.MeasureStateHolder
-import org.endmyopia.calc.util.debug
 import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getColorRes
 import org.endmyopia.calc.util.interpolate
@@ -96,7 +95,6 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     }
 
     fun updateMeasurementCoords(measurements: List<Measurement>) {
-        debug("updateMeasurementCoords ${measurements.size}")
         allMeasurements = measurements
 
         minTimestamp = Long.MAX_VALUE
@@ -119,7 +117,6 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
         val allModeToMeasurementsMap = measurements.groupBy { it.mode }
         allModesToXYs.clear()
         MeasurementMode.values().forEach { mode ->
-            debug("getXYs for $mode")
             allModesToXYs.put(mode, getXYs(allModeToMeasurementsMap[mode].orEmpty()))
         }
 
@@ -127,7 +124,6 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
     }
 
     fun updateModes(modes: List<MeasurementMode>) {
-        debug("updateModes $modes")
         selectedModes = modes
         doRender()
     }
@@ -136,10 +132,8 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
         if (width == 0 || height == 0 || allMeasurements.isEmpty()) return
         val canvas = holder.lockCanvas() ?: return
         canvas.drawColor(Color.WHITE)
-        debug("width $savedWidth")
         selectedModes.forEach { mode ->
             val xyS = allModesToXYs[mode]
-            debug("xys for mode $mode: ${xyS?.joinToString()}")
             if (xyS?.isNotEmpty() == true) {
                 path.reset()
                 path.moveTo(xyS[0], xyS[1])
@@ -189,7 +183,6 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
         paint.style = Paint.Style.FILL_AND_STROKE
 
         holder.unlockCanvasAndPost(canvas)
-        debug("rendered")
     }
 
     private fun getXYs(measurements: List<Measurement>): FloatArray {
@@ -203,8 +196,6 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
                 measurement.distanceMeters.toFloat(),
                 -offset
             )
-
-            debug("getting xy index $index date: ${measurement.date} date.toFloat: ${measurement.date.toFloat()} x: $x")
 
             val doubleIndex = index * 2
             xYs[doubleIndex] = x
