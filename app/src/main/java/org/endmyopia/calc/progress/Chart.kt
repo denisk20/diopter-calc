@@ -15,7 +15,7 @@ import org.endmyopia.calc.util.dpt
 import org.endmyopia.calc.util.getColorRes
 import org.endmyopia.calc.util.interpolate
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import kotlin.math.roundToInt
 
 /**
@@ -176,7 +176,7 @@ class Chart(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attr
         )
         canvas.drawText(
             maxTimestampLabel,
-            savedWidth - marginPx * 2f - labelOffsetPx,
+            savedWidth - marginPx * 2f - labelOffsetPx * 2,
             savedHeight.toFloat() + marginPx * 2 - labelOffsetPx,
             paint
         )

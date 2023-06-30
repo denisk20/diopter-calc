@@ -35,32 +35,38 @@ class ProgressStateHolder : ViewModel() {
     fun fillData(context: Context) {
         GlobalScope.launch {
             selectedValue.postValue(null)
-//            val measurements =
-//                selectedModes.value?.let {
-//                    AppDatabase.getInstance(context.applicationContext as Application)
-//                        .getMeasurementDao()
-//                        .getMeasurements(it)
-//                }
-            val measurements = listOf(
-                Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
-                Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
-                Measurement(3, MeasurementMode.BOTH, 1582520785860, 0.20),
-                Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
-                Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
-
-                Measurement(1, MeasurementMode.LEFT, 1582520770860, 0.5),
-                Measurement(2, MeasurementMode.LEFT, 1582520772860, 0.61),
-                Measurement(3, MeasurementMode.LEFT, 1582520773860, 0.63),
-                Measurement(4, MeasurementMode.LEFT, 1582520774860, 0.60),
-                Measurement(5, MeasurementMode.LEFT, 1582520775860, 0.65),
-                Measurement(5, MeasurementMode.LEFT, 1582520777860, 0.82),
-
-                Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
-                Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),
-                Measurement(3, MeasurementMode.RIGHT, 1582520787860, 0.4),
-                Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
-                Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
-            )
+            val measurements =
+                selectedModes.value?.let {
+                    AppDatabase.getInstance(context.applicationContext as Application)
+                        .getMeasurementDao()
+                        .getMeasurements(it)
+                }
+//            val startTimestamp = 1582520777860
+//            val step = 100
+//            val measurements = mutableListOf<Measurement>()
+//            for(i in 1..500000) {
+//                measurements.add(Measurement(i.toLong(), MeasurementMode.values()[i % 3], startTimestamp + i * step, Random.nextDouble(0.2, 5.0), 0.0))
+//            }
+//            val measurements = listOf(
+//                Measurement(1, MeasurementMode.BOTH, 1582520777860, 0.3),
+//                Measurement(2, MeasurementMode.BOTH, 1582520780860, 0.79),
+//                Measurement(3, MeasurementMode.BOTH, 1582520785860, 0.20),
+//                Measurement(4, MeasurementMode.BOTH, 1582520797860, 0.40),
+//                Measurement(5, MeasurementMode.BOTH, 1582520975860, 0.50),
+//
+//                Measurement(1, MeasurementMode.LEFT, 1582520770860, 0.5),
+//                Measurement(2, MeasurementMode.LEFT, 1582520772860, 0.61),
+//                Measurement(3, MeasurementMode.LEFT, 1582520773860, 0.63),
+//                Measurement(4, MeasurementMode.LEFT, 1582520774860, 0.60),
+//                Measurement(5, MeasurementMode.LEFT, 1582520775860, 0.65),
+//                Measurement(5, MeasurementMode.LEFT, 1582520777860, 0.82),
+//
+//                Measurement(1, MeasurementMode.RIGHT, 1582520777860, 0.9),
+//                Measurement(2, MeasurementMode.RIGHT, 1582520782860, 0.2),
+//                Measurement(3, MeasurementMode.RIGHT, 1582520787860, 0.4),
+//                Measurement(4, MeasurementMode.RIGHT, 1582520799860, 0.3),
+//                Measurement(5, MeasurementMode.RIGHT, 1582520984860, 0.7)
+//            )
 
             data.postValue(measurements)
         }

@@ -49,4 +49,5 @@
       code block
       ```
     </string>
+    <string name="noData">Your measurements will appear here</string>
 </resources>

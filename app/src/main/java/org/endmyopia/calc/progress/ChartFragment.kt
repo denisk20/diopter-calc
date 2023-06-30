@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.endmyopia.calc.R
+import org.endmyopia.calc.data.Measurement
+import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentChartBinding
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * @author denisk
@@ -15,7 +19,8 @@ import org.endmyopia.calc.databinding.FragmentChartBinding
  */
 class ChartFragment : Fragment() {
 
-    val maxPoints = 5
+    val groupLimit = 150
+    val totalLimit = groupLimit * 3
 
     private lateinit var dataBinding: FragmentChartBinding
 
@@ -39,7 +44,40 @@ class ChartFragment : Fragment() {
         }
 
         holder.data.observe(viewLifecycleOwner) { measurements ->
-            dataBinding.chart.updateMeasurementCoords(measurements)
+            if (measurements.size > totalLimit) {
+                val map = measurements?.groupBy { it.mode }.orEmpty()
+                val avgsGlobalMap = mutableMapOf<MeasurementMode, List<Measurement>>()
+                for (entry in map.entries) {
+                    val measurementsForMode = map.getOrDefault(entry.key, listOf())
+                    var meas = measurementsForMode
+                    if (measurementsForMode.size > groupLimit) {
+                        val groupSize =
+                            ceil(measurementsForMode.size / groupLimit.toFloat()).toInt()
+                        val groupsCount =
+                            floor(measurementsForMode.size / groupSize.toFloat()).toInt()
+                        val avgMeasurements = mutableListOf<Measurement>()
+                        for (i in measurementsForMode.indices step groupSize) {
+                            if (i + groupSize > measurementsForMode.size) {
+                                continue
+                            }
+                            val subList = measurementsForMode.subList(i, i + groupSize)
+                            val avgDate = subList.map { it.date }.average().toLong()
+                            val avgDistance = subList.map { it.distanceMeters }.average()
+                            val measurement = Measurement(0, entry.key, avgDate, avgDistance, 0.0)
+                            avgMeasurements.add(measurement)
+                        }
+                        if (groupsCount < groupLimit) {
+                            avgMeasurements.addAll(measurementsForMode.takeLast(groupLimit - groupsCount))
+                        }
+                        meas = avgMeasurements
+                    }
+                    avgsGlobalMap.put(entry.key, meas)
+                }
+                dataBinding.chart.updateMeasurementCoords(avgsGlobalMap.flatMap { it.value })
+            } else {
+                dataBinding.chart.updateMeasurementCoords(measurements)
+            }
+
         }
 
         return view

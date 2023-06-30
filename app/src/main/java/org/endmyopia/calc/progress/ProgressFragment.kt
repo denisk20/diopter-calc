@@ -15,8 +15,7 @@ import org.endmyopia.calc.R
 import org.endmyopia.calc.data.MeasurementMode
 import org.endmyopia.calc.databinding.FragmentProgressBinding
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 
 class ProgressFragment : Fragment() {
@@ -44,10 +43,6 @@ class ProgressFragment : Fragment() {
             holder.selectedValue.postValue(null)
         }.attach()
         with(dataBinding) {
-
-            //chart.axisLeft.axisMinimum = yAxisShift
-            //chart.axisRight.axisMinimum = yAxisShift
-
             holder.fillData(requireContext())
 
             addFilterOnClickListener(filterLeft, MeasurementMode.LEFT)
@@ -56,6 +51,13 @@ class ProgressFragment : Fragment() {
         }
 
         showSwipeTip()
+
+        holder.data.observe(viewLifecycleOwner) { measurements ->
+            dataBinding.progressPager.visibility =
+                if (measurements.size > 0) View.VISIBLE else View.GONE
+            dataBinding.dots.visibility = if (measurements.size > 0) View.VISIBLE else View.GONE
+            dataBinding.noData.visibility = if (measurements.size > 0) View.GONE else View.VISIBLE
+        }
 
         return view
     }
