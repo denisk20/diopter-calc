@@ -51,3 +51,12 @@
 }
 
 -keepattributes LineNumberTable,SourceFile
+
+# markwon
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+-keep class com.caverock.androidsvg.** { *; }
+-keep class pl.droidsonroids.gif.** { *; }
+-dontwarn com.caverock.androidsvg.**
+-dontwarn pl.droidsonroids.gif.GifDrawable
