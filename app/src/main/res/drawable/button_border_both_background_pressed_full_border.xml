@@ -8,5 +8,5 @@
 
             />
 
-    <solid android:color="@color/colorPrimaryTransparent" />
+    <solid android:color="@color/bothTransparent50" />
 </shape>

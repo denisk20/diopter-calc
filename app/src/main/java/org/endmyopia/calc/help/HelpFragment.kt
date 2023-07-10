@@ -9,9 +9,8 @@ import androidx.fragment.app.Fragment
 import io.noties.markwon.Markwon
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.image.file.FileSchemeHandler
-import kotlinx.android.synthetic.main.fragment_help.*
 import org.endmyopia.calc.R
-import java.util.*
+import java.util.Scanner
 
 
 /**
@@ -39,6 +38,6 @@ class HelpFragment : Fragment() {
         val node = markwon.parse(md)
         val render = markwon.render(node)
 
-        markwon.setParsedMarkdown(help, render)
+        markwon.setParsedMarkdown(view.findViewById(R.id.help), render)
     }
 }
