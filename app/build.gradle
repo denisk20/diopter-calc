@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
     id 'org.jetbrains.kotlin.kapt'
 }
 
@@ -76,12 +77,12 @@ dependencies {
     implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
     implementation "androidx.preference:preference-ktx:1.2.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10'
     implementation "io.noties.markwon:core:4.6.2"
     implementation 'io.noties.markwon:image:4.6.2'
     // optional - Kotlin Extensions and Coroutines support for Room
