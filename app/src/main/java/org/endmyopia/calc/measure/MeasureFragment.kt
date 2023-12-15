@@ -9,14 +9,9 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.endmyopia.calc.MainActivity
 import org.endmyopia.calc.R
 import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
@@ -45,17 +40,6 @@ class MeasureFragment : Fragment() {
         dataBinding.holder = holder
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // subscribe to the volume pressed events
-        (requireActivity() as MainActivity).volumePressedEvent.asFlow()
-            .onEach {
-                takeMeasurement()
-            }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onStart() {
@@ -123,6 +107,9 @@ class MeasureFragment : Fragment() {
     }
 
     fun takeMeasurement() {
+        if (dataBinding.holder?.hasTakenMeasurement?.value == true) {
+            return
+        }
         dataBinding.holder?.hasTakenMeasurement?.postValue(true)
         activity?.let {
             GlobalScope.launch {
