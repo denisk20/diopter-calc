@@ -24,9 +24,11 @@ import com.google.ar.sceneform.Sceneform
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.endmyopia.calc.data.AppDatabase
 import org.endmyopia.calc.data.Measurement
 import org.endmyopia.calc.help.HelpFragment
@@ -38,8 +40,6 @@ import java.lang.reflect.Type
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    val volumePressedEvent = BroadcastChannel<Unit>(BUFFERED)
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var navView: NavigationView
@@ -243,7 +243,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @OptIn(ObsoleteCoroutinesApi::class)
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            volumePressedEvent.trySend(Unit)
+            val measure =
+                supportFragmentManager.findFragmentByTag(R.id.measure.toString())
+            if (measure?.isVisible == true) {
+                (measure as MeasureFragment).takeMeasurement()
+            }
         }
         return true
     }
