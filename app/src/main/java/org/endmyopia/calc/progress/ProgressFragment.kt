@@ -42,6 +42,7 @@ class ProgressFragment : Fragment() {
             dataBinding.dots.selectTab(tab, true)
             holder.selectedValue.postValue(null)
         }.attach()
+
         with(dataBinding) {
             holder.fillData(requireContext())
 
@@ -49,7 +50,6 @@ class ProgressFragment : Fragment() {
             addFilterOnClickListener(filterBoth, MeasurementMode.BOTH)
             addFilterOnClickListener(filterRight, MeasurementMode.RIGHT)
         }
-
         showSwipeTip()
 
         holder.data.observe(viewLifecycleOwner) { measurements ->

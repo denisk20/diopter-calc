@@ -35,12 +35,9 @@ class ProgressStateHolder : ViewModel() {
     fun fillData(context: Context) {
         GlobalScope.launch {
             selectedValue.postValue(null)
-            val measurements =
-                selectedModes.value?.let {
-                    AppDatabase.getInstance(context.applicationContext as Application)
-                        .getMeasurementDao()
-                        .getMeasurements(it)
-                }
+            val measurements = AppDatabase.getInstance(context.applicationContext as Application)
+                .getMeasurementDao()
+                .getMeasurements(MeasurementMode.values().asList())
 //            val startTimestamp = 1582520777860
 //            val step = 100
 //            val measurements = mutableListOf<Measurement>()
