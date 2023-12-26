@@ -11,7 +11,7 @@ android {
         applicationId "org.endmyopia.calc"
         minSdk 24
         targetSdk 34
-        versionName '1.3.1'
+        versionName '1.3.2'
         versionCode Integer.parseInt(getBuildNumberFile().text)
     }
     signingConfigs {
@@ -62,11 +62,10 @@ task incrementBuildNumber {
 }
 
 
-var kotlin_version = '1.8.22'
+var kotlin_version = '1.9.11'
 var room_version = '2.6.1'
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -74,7 +73,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
+    implementation "com.gorisse.thomas.sceneform:sceneform:1.23.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.room:room-runtime:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
