@@ -7,20 +7,23 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
-import com.google.ar.core.*
-import com.google.ar.core.Config.AugmentedFaceMode
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.core.AugmentedFace
+import com.google.ar.core.CameraConfig
+import com.google.ar.core.CameraConfigFilter
+import com.google.ar.core.Config
+import com.google.ar.core.Frame
+import com.google.ar.core.Session
+import io.github.sceneview.ar.ARSceneView
+import org.endmyopia.calc.R
 import org.endmyopia.calc.util.isEmulator
-import java.util.*
 import kotlin.random.Random
 
-class FaceArFragment : ArFragment() {
+class FaceArFragment : Fragment() {
 
+    lateinit var sceneView: ARSceneView
 
     private var lastUpdate = -1L
 
@@ -30,69 +33,14 @@ class FaceArFragment : ArFragment() {
 
     private val UPDATE_INTERVAL = 500L //ms
 
-    val onUpdateListener: (FrameTime) -> Unit = {
-        run {
-            val now = System.currentTimeMillis()
-
-            if (now - UPDATE_INTERVAL < lastUpdate) {
-                return@run
-            }
-            val faceList = arSceneView.session!!.getAllTrackables(AugmentedFace::class.java)
-
-            if (faceList.isNotEmpty()) {
-                faceFound = true
-            } else {
-                consequentEmptyFrames++
-                if (PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean(
-                        "measure_with_gesture",
-                        true
-                    ) && faceFound && consequentEmptyFrames >= CONSEQUENT_FRAMES_COUNT_LIMIT
-                ) {
-                    faceFound = false;
-                    consequentEmptyFrames = 0
-                    (parentFragment as MeasureFragment).takeMeasurement()
-                }
-            }
-            // Make new AugmentedFaceNodes for any new faces.
-            for (face in faceList) {
-                val nosePose = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP)
-                val noseTranslation = nosePose.translation
-                val distMeters =
-                    Math.sqrt((noseTranslation[0] * noseTranslation[0] + noseTranslation[1] * noseTranslation[1] + noseTranslation[2] * noseTranslation[2]).toDouble())
-                (parentFragment as MeasureFragment).update(distMeters)
-            }
-
-            if (isEmulator()) {
-                (parentFragment as MeasureFragment).update(Random.nextDouble(0.1, 1.5))
-            }
-            lastUpdate = now
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setOnSessionConfigurationListener { session, config ->
-            run {
-                config.augmentedFaceMode = AugmentedFaceMode.MESH3D
-                val filter = CameraConfigFilter(session)
-                filter.facingDirection = CameraConfig.FacingDirection.FRONT
-                val supportedCameraConfigs = session.getSupportedCameraConfigs(filter)
-                if (supportedCameraConfigs != null && supportedCameraConfigs.size > 0) {
-                    session.cameraConfig = supportedCameraConfigs[0]
-                }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         val holder: MeasureStateHolder =
             ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
         if (holder.hasTakenMeasurement.value == true) {
-            arSceneView.pause()
+            sceneView.session?.pause()
         } else
-            arSceneView.resume()
-        instructionsController.isEnabled = false
+            sceneView.session?.resume()
     }
 
     /**
@@ -102,47 +50,89 @@ class FaceArFragment : ArFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val frameLayout =
-            super.onCreateView(inflater, container, savedInstanceState) as FrameLayout?
-
-        return frameLayout
+        return inflater.inflate(R.layout.fragment_face_ar, container, false)
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        //this prevents fullscreen, see https://github.com/google-ar/sceneform-android-sdk/issues/88
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        sceneView = view.findViewById<ARSceneView>(R.id.sceneView).apply {
+            sessionConfiguration = { session, config ->
+                config.augmentedFaceMode = Config.AugmentedFaceMode.MESH3D
+                val filter = CameraConfigFilter(session)
+                filter.facingDirection = CameraConfig.FacingDirection.FRONT
+                val supportedCameraConfigs = session.getSupportedCameraConfigs(filter)
+                if (supportedCameraConfigs.size > 0) {
+                    session.cameraConfig = supportedCameraConfigs[0]
+                }
+            }
+            onSessionResumed =
+                { it.setCameraTextureNames(sceneView.cameraStream?.cameraTextureIds) }
+            onSessionUpdated = this@FaceArFragment::onSessionUpdated
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        // This is important to make sure that the camera stream renders first so that
-        // the face mesh occlusion works correctly.
-        arSceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST)
-
         val holder: MeasureStateHolder =
             ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
 
         holder.hasTakenMeasurement.observe(requireActivity(), androidx.lifecycle.Observer {
             handleTakenMeasurement(it)
         })
-
-        arSceneView.scene.addOnUpdateListener(onUpdateListener)
     }
 
     override fun onStop() {
-        arSceneView.scene.removeOnUpdateListener(onUpdateListener)
+        sceneView.onSessionUpdated = null
         super.onStop()
     }
 
     private fun handleTakenMeasurement(hasTakenIt: Boolean) {
         if (hasTakenIt) {
-            arSceneView.pause()
-            arSceneView.visibility = GONE
+            sceneView.session?.pause()
+            sceneView.visibility = GONE
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             consequentEmptyFrames = 0;
-            arSceneView.resume()
-            arSceneView.visibility = VISIBLE
+            sceneView.session?.resume()
+            sceneView.visibility = VISIBLE
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+    }
+
+    fun onSessionUpdated(session: Session, frame: Frame) {
+        val now = System.currentTimeMillis()
+        if (now - UPDATE_INTERVAL < lastUpdate) {
+            return
+        }
+        val faceList = session.getAllTrackables(AugmentedFace::class.java)
+
+        if (faceList.isNotEmpty()) {
+            faceFound = true
+        } else {
+            consequentEmptyFrames++
+            if (PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean(
+                    "measure_with_gesture",
+                    true
+                ) && faceFound && consequentEmptyFrames >= CONSEQUENT_FRAMES_COUNT_LIMIT
+            ) {
+                faceFound = false
+                consequentEmptyFrames = 0
+                (parentFragment as MeasureFragment).takeMeasurement()
+            }
+        }
+
+        // Make new AugmentedFaceNodes for any new faces.
+        for (face in faceList) {
+            val nosePose = face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP)
+            val noseTranslation = nosePose.translation
+            val distMeters =
+                Math.sqrt((noseTranslation[0] * noseTranslation[0] + noseTranslation[1] * noseTranslation[1] + noseTranslation[2] * noseTranslation[2]).toDouble())
+            (parentFragment as MeasureFragment).update(distMeters)
+        }
+
+        if (isEmulator()) {
+            (parentFragment as MeasureFragment).update(Random.nextDouble(0.1, 1.5))
+        }
+        lastUpdate = now
     }
 }

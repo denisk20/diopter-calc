@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      *
      * Finishes the activity if Sceneform can not run
      */
-    fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean {
+    private fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean {
         if (ArCoreApk.getInstance()
                 .checkAvailability(activity) === ArCoreApk.Availability.UNSUPPORTED_DEVICE_NOT_CAPABLE
         ) {
@@ -280,10 +280,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             activity.finish()
             return false
         }
-        if (!Sceneform.isSupported(this)) {
-            return false
-        }
-        return true
+        return Sceneform.isSupported(this)
     }
 
     companion object {
