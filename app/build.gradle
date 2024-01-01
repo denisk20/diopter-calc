@@ -11,7 +11,7 @@ android {
         applicationId "org.endmyopia.calc"
         minSdk 24
         targetSdk 34
-        versionName '1.3.2'
+        versionName '1.3.3'
         versionCode Integer.parseInt(getBuildNumberFile().text)
     }
     signingConfigs {

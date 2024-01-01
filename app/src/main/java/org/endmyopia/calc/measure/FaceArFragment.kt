@@ -37,10 +37,8 @@ class FaceArFragment : Fragment() {
         super.onResume()
         val holder: MeasureStateHolder =
             ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
-        if (holder.hasTakenMeasurement.value == true) {
-            sceneView.session?.pause()
-        } else
-            sceneView.session?.resume()
+        val hasTakenMeasurement = holder.hasTakenMeasurement.value == true
+        updateArSession(hasTakenMeasurement)
     }
 
     /**
@@ -65,9 +63,9 @@ class FaceArFragment : Fragment() {
                     session.cameraConfig = supportedCameraConfigs[0]
                 }
             }
-            onSessionResumed =
-                { it.setCameraTextureNames(sceneView.cameraStream?.cameraTextureIds) }
-            onSessionUpdated = this@FaceArFragment::onSessionUpdated
+            onSessionResumed = {
+                it.setCameraTextureNames(sceneView.cameraStream?.cameraTextureIds)
+            }
         }
     }
 
@@ -77,22 +75,19 @@ class FaceArFragment : Fragment() {
             ViewModelProvider(requireActivity()).get(MeasureStateHolder::class.java)
 
         holder.hasTakenMeasurement.observe(requireActivity(), androidx.lifecycle.Observer {
-            handleTakenMeasurement(it)
+            updateArSession(it)
         })
     }
 
-    override fun onStop() {
-        sceneView.onSessionUpdated = null
-        super.onStop()
-    }
-
-    private fun handleTakenMeasurement(hasTakenIt: Boolean) {
+    private fun updateArSession(hasTakenIt: Boolean) {
         if (hasTakenIt) {
             sceneView.session?.pause()
+            sceneView.onSessionUpdated = null
             sceneView.visibility = GONE
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             consequentEmptyFrames = 0;
+            sceneView.onSessionUpdated = this@FaceArFragment::onSessionUpdated
             sceneView.session?.resume()
             sceneView.visibility = VISIBLE
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

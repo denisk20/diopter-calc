@@ -9,7 +9,6 @@
     <string name="measure">Measure</string>
     <string name="progress">Progress</string>
     <string name="settings">Settings</string>
-
     <string name="measurement_taken">Measurement for %s is saved</string>
     <string name="focus">FOCUS</string>
     <string name="measuring">Measuring %s</string>
@@ -29,7 +28,6 @@
     <string name="pt">pt</string>
     <string name="focus_font_size">Focus text font size</string>
     <string name="focus_text">Focus text</string>
-
     <string name="change_color_hint">You can tap on the focus text to change its color</string>
     <string name="info">Useful tips</string>
     <string name="cover_nose_tip">Pro Tip: You can cover your nose to take a measurement without pressing a button</string>
@@ -41,15 +39,5 @@
     <string name="import_warn">This will import the progress data and delete your existing data (if any). This can\'t be undone. Proceed?</string>
     <string name="import_complete">Import Completed</string>
     <string name="help_menu">Help</string>
-    <string name="help"># Hello!\n
-
-      > a quote
-
-      ```
-      code block
-      ```
-    </string>
     <string name="noData">Your measurements will appear here</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
